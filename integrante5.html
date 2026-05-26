@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Integrante 5 - Contenedores y Docker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, sans-serif; background: #070b14; color: #e5edf8; }
+    .grid-bg { background-image: linear-gradient(rgba(236,72,153,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(236,72,153,.08) 1px, transparent 1px); background-size: 72px 72px; }
+    .gradient-text { background: linear-gradient(135deg, #ec4899, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .rule { border-top: 1px solid rgba(148, 163, 184, .18); }
+  </style>
+</head>
+<body>
+  <nav class="sticky top-0 z-30 border-b border-white/10 bg-slate-950/85 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between">
+      <a href="index.html#equipo" class="text-sm font-bold text-pink-300 hover:text-white">← Volver al equipo</a>
+      <span class="text-sm text-slate-400">Integrante 5 · Operación 03</span>
+    </div>
+  </nav>
+
+  <header class="relative overflow-hidden grid-bg">
+    <div class="absolute inset-0 bg-gradient-to-b from-pink-950/45 via-slate-950/40 to-slate-950"></div>
+    <div class="relative max-w-7xl mx-auto px-6 py-24">
+      <p class="text-pink-300 font-bold uppercase tracking-[0.24em] text-sm">Operación 03</p>
+      <h1 class="text-5xl md:text-7xl font-black mt-4">Contenedores, Docker y <span class="gradient-text">microservicios</span></h1>
+      <p class="text-xl text-slate-300 mt-6 max-w-3xl leading-relaxed">Virtualización a nivel de sistema operativo para APIs de IA, servicios auxiliares e interfaces web de despliegue rápido.</p>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-16 space-y-16">
+    <section class="grid lg:grid-cols-[360px_1fr] gap-14 items-center">
+      <div class="rounded-2xl overflow-hidden min-h-[560px]">
+        <img src="Milton%20Anderson%20Ricra.png" class="h-[560px] w-full object-cover" alt="Milton Anderson Ricra">
+      </div>
+      <div>
+        <span class="text-pink-300 text-sm font-bold uppercase tracking-[0.2em]">Integrante 5 · Operación 03</span>
+        <h2 class="text-4xl font-black mt-4 mb-6">Milton Anderson Ricra</h2>
+        <div class="space-y-4 text-slate-300 text-lg leading-relaxed">
+          <p><b class="text-white">Rol:</b> expositor de contenedores y virtualización a nivel de sistema operativo.</p>
+          <p><b class="text-white">Tema asignado:</b> Docker, LXC, contenedores, microservicios y APIs de IA.</p>
+          <p><b class="text-white">Descripción:</b> explica cómo los contenedores comparten el kernel del host para lograr despliegues más rápidos y ligeros.</p>
+          <p><b class="text-white">Debe destacar:</b> diferencias VM vs contenedor, límites de recursos, portabilidad y arquitectura de microservicios.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid lg:grid-cols-2 gap-12">
+      <div>
+        <h2 class="text-4xl font-black mb-6">Qué debe exponer</h2>
+        <p class="text-slate-300 text-lg leading-relaxed">Los contenedores comparten el kernel del sistema operativo host, pero aíslan procesos, dependencias y configuraciones. Por eso son más ligeros y rápidos que una VM completa.</p>
+      </div>
+      <div>
+        <h2 class="text-4xl font-black mb-6">Pasos del PDF</h2>
+        <ol class="space-y-3 text-slate-300 text-lg list-decimal list-inside">
+          <li>Instalar Docker, LXC o Solaris Containers.</li>
+          <li>Configurar contenedores aislados.</li>
+          <li>Definir límites de CPU, memoria, red y almacenamiento.</li>
+          <li>Desplegar API de IA, interfaz web y agente de monitoreo.</li>
+          <li>Documentar ventajas y limitaciones.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Comparación VM vs Contenedor</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="border-b border-white/20 text-slate-200">
+            <tr><th class="py-4 pr-6">VM</th><th class="py-4">Contenedor</th></tr>
+          </thead>
+          <tbody class="text-slate-300">
+            <tr class="border-b border-white/10"><td class="py-4 pr-6">Más pesado</td><td class="py-4">Más ligero</td></tr>
+            <tr class="border-b border-white/10"><td class="py-4 pr-6">Sistema operativo completo</td><td class="py-4">Comparte kernel</td></tr>
+            <tr><td class="py-4 pr-6">Más aislamiento</td><td class="py-4">Más rapidez</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Arquitectura de contenedores</h2>
+      <div class="grid md:grid-cols-5 gap-8 text-slate-300 text-lg">
+        <p><b class="text-white">Cliente:</b><br>solicita información.</p>
+        <p><b class="text-pink-300">API IA:</b><br>responde inferencias.</p>
+        <p><b class="text-cyan-300">Web UI:</b><br>muestra resultados.</p>
+        <p><b class="text-purple-300">Monitor:</b><br>registra métricas.</p>
+        <p><b class="text-emerald-300">DB:</b><br>almacena datos.</p>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Docker: imagen, contenedor y orquestación</h2>
+      <div class="grid lg:grid-cols-3 gap-12 text-lg text-slate-300">
+        <p><b class="text-pink-300">Imagen:</b> plantilla empaquetada con aplicación y dependencias.</p>
+        <p><b class="text-cyan-300">Contenedor:</b> instancia aislada que ejecuta la aplicación.</p>
+        <p><b class="text-emerald-300">Orquestación:</b> administración y escalado con herramientas como Kubernetes.</p>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Evidencias</h2>
+      <div class="grid md:grid-cols-3 gap-5">
+        <img src="integrante%205.0.jpeg" class="rounded-xl h-64 w-full object-cover" alt="Docker">
+        <img src="integrante%205.1.jpeg" class="rounded-xl h-64 w-full object-cover" alt="Arquitectura contenedores">
+        <img src="integrante%205.2.jpeg" class="rounded-xl h-64 w-full object-cover" alt="Microservicios">
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-6">Guion para exponer</h2>
+      <p class="text-slate-300 text-xl leading-relaxed max-w-5xl">“Los contenedores son ideales para microservicios y APIs de IA porque arrancan rápido y consumen menos recursos. Comparten el kernel del host, lo que los hace más ligeros, aunque su limitación es que ofrecen menor aislamiento que una máquina virtual completa.”</p>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Gráfico de arquitectura Docker</h2>
+      <svg viewBox="0 0 900 360" class="w-full" role="img" aria-label="Arquitectura Docker con microservicios">
+        <text x="20" y="34" fill="#e5edf8" font-size="22" font-weight="800">Host con contenedores</text>
+        <rect x="50" y="80" width="800" height="210" rx="18" fill="#0f172a" stroke="#334155"/>
+        <rect x="90" y="120" width="170" height="90" rx="14" fill="#111827" stroke="#ec4899"/>
+        <text x="128" y="172" fill="#ec4899" font-size="18" font-weight="800">API IA</text>
+        <rect x="285" y="120" width="170" height="90" rx="14" fill="#111827" stroke="#22d3ee"/>
+        <text x="334" y="172" fill="#22d3ee" font-size="18" font-weight="800">Web UI</text>
+        <rect x="480" y="120" width="170" height="90" rx="14" fill="#111827" stroke="#a78bfa"/>
+        <text x="525" y="172" fill="#a78bfa" font-size="18" font-weight="800">Monitor</text>
+        <rect x="675" y="120" width="130" height="90" rx="14" fill="#111827" stroke="#34d399"/>
+        <text x="720" y="172" fill="#34d399" font-size="18" font-weight="800">DB</text>
+        <rect x="120" y="245" width="660" height="28" rx="14" fill="#172033"/>
+        <text x="370" y="265" fill="#e5edf8" font-size="14" font-weight="800">Kernel compartido del host</text>
+        <circle cx="175" cy="228" r="5" fill="#ec4899"><animate attributeName="cx" values="175;740;175" dur="5s" repeatCount="indefinite"/></circle>
+      </svg>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Características de los contenedores</h2>
+      <div class="grid md:grid-cols-2 gap-x-16 gap-y-5 text-slate-300 text-lg">
+        <p><b class="text-pink-300">Arranque rápido:</b> ideal para levantar servicios en segundos.</p>
+        <p><b class="text-pink-300">Bajo consumo:</b> no carga un SO completo por servicio.</p>
+        <p><b class="text-pink-300">Portabilidad:</b> una imagen puede ejecutarse en distintos hosts compatibles.</p>
+        <p><b class="text-pink-300">Escalado:</b> se pueden replicar contenedores según demanda.</p>
+        <p><b class="text-pink-300">Menor aislamiento:</b> comparten kernel con el host.</p>
+        <p><b class="text-pink-300">Microservicios:</b> separa API, web, monitoreo y base de datos.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

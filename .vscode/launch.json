@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node-terminal",
+            "request": "launch",
+            "name": "Abrir en Chrome",
+            "command": "Start-Process -FilePath 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' -ArgumentList '--new-window','file:///E:/Virtualiza%20Servidores/index.html'",
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

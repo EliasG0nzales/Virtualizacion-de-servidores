@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Integrante 1 - Introducción y Contexto</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, sans-serif; background: #070b14; color: #e5edf8; }
+    .grid-bg { background-image: linear-gradient(rgba(99,102,241,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(99,102,241,.08) 1px, transparent 1px); background-size: 72px 72px; }
+    .gradient-text { background: linear-gradient(135deg, #8b5cf6, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .rule { border-top: 1px solid rgba(148, 163, 184, .18); }
+    .representative-photo {
+      min-height: 430px;
+      overflow: hidden;
+      position: relative;
+    }
+    .representative-photo img {
+      height: 430px;
+      width: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+    .animated-virtual-image {
+      overflow: hidden;
+      position: relative;
+    }
+    .animated-virtual-image img {
+      animation: secondImagePulse 3.2s ease-in-out infinite;
+      filter: saturate(1.18) contrast(1.08);
+    }
+    .animated-virtual-image::before {
+      animation: scanGlow 2.6s linear infinite;
+      background: linear-gradient(90deg, transparent, rgba(34, 211, 238, .32), transparent);
+      content: "";
+      height: 100%;
+      left: -35%;
+      position: absolute;
+      top: 0;
+      width: 35%;
+      z-index: 2;
+    }
+    .tech-orbit {
+      aspect-ratio: 1;
+      border: 1px solid rgba(34, 211, 238, .28);
+      border-radius: 50%;
+      margin-inline: auto;
+      max-width: 360px;
+      position: relative;
+      width: 100%;
+      animation: orbitFloat 5s ease-in-out infinite;
+    }
+    .tech-orbit::before,
+    .tech-orbit::after {
+      border: 2px dashed rgba(129, 140, 248, .45);
+      border-radius: inherit;
+      content: "";
+      inset: 12%;
+      position: absolute;
+      animation: orbitSpin 14s linear infinite;
+    }
+    .tech-orbit::after {
+      border-color: rgba(34, 211, 238, .42);
+      inset: 27%;
+      animation-direction: reverse;
+      animation-duration: 9s;
+    }
+    .tech-core {
+      background: radial-gradient(circle, rgba(34, 211, 238, .85), rgba(99, 102, 241, .08) 58%, transparent 60%);
+      border-radius: 50%;
+      inset: 38%;
+      position: absolute;
+      box-shadow: 0 0 55px rgba(34, 211, 238, .35);
+    }
+    @keyframes secondImagePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.045); }
+    }
+    @keyframes scanGlow {
+      from { transform: translateX(0); }
+      to { transform: translateX(390%); }
+    }
+    @keyframes orbitSpin {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes orbitFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-16px); }
+    }
+    @media (max-width: 768px) {
+      .representative-photo, .representative-photo img { min-height: 300px; height: 300px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="sticky top-0 z-30 border-b border-white/10 bg-slate-950/85 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <a href="index.html#equipo" class="text-sm font-bold text-indigo-300 hover:text-white">← Volver al equipo</a>
+      <span class="text-sm text-slate-400">Integrante 1 · Contexto</span>
+    </div>
+  </nav>
+
+  <header class="relative overflow-hidden grid-bg">
+    <div class="absolute inset-0 bg-gradient-to-b from-indigo-950/45 via-slate-950/40 to-slate-950"></div>
+    <div class="relative max-w-7xl mx-auto px-6 py-24">
+      <p class="text-indigo-300 font-bold uppercase tracking-[0.24em] text-sm">Virtualización de Servidores</p>
+      <h1 class="text-5xl md:text-7xl font-black mt-4 max-w-5xl">Introducción y <span class="gradient-text">objetivos</span></h1>
+      <p class="text-xl text-slate-300 mt-6 max-w-3xl leading-relaxed">Apertura de la exposición: qué es virtualizar, por qué se usa en ciencia de datos e IA y qué problema resuelve frente a la infraestructura física tradicional.</p>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-16 space-y-16">
+    <section class="grid lg:grid-cols-[360px_1fr] gap-14 items-center">
+      <div class="representative-photo rounded-2xl min-h-[560px]">
+        <img src="Elias%20Gonzales%20Jenhua.png" alt="Elias Gonzales Jenhua">
+      </div>
+      <div>
+        <span class="text-cyan-300 text-sm font-bold uppercase tracking-[0.2em]">Representante del grupo</span>
+        <h2 class="text-4xl font-black mt-4 mb-6">Elias Gonzales Jenhua</h2>
+        <div class="space-y-4 text-slate-300 text-lg leading-relaxed">
+          <p><b class="text-white">Rol:</b> representante del grupo y expositor de la introducción.</p>
+          <p><b class="text-white">Tema asignado:</b> introducción, contexto del proyecto, definición de virtualización y objetivos del caso práctico.</p>
+          <p><b class="text-white">Responsabilidad:</b> abrir la exposición, explicar el problema de los servidores físicos tradicionales y conectar el tema con ciencia de datos e inteligencia artificial.</p>
+          <p><b class="text-white">Debe transmitir:</b> claridad, dominio del tema, orden en las ideas y relación directa con el documento de trabajo.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid lg:grid-cols-3 gap-12">
+      <div>
+        <span class="text-cyan-300 text-sm font-bold uppercase tracking-[0.18em]">Definición</span>
+        <h2 class="text-3xl font-black mt-3 mb-4">¿Qué es virtualización?</h2>
+        <p class="text-slate-300 leading-relaxed">Es la técnica que permite dividir los recursos físicos de un servidor en múltiples entornos virtuales independientes. Cada entorno puede ejecutar servicios, aplicaciones o sistemas completos como si tuviera hardware propio.</p>
+      </div>
+      <div>
+        <span class="text-indigo-300 text-sm font-bold uppercase tracking-[0.18em]">Problema</span>
+        <h2 class="text-3xl font-black mt-3 mb-4">Servidor físico tradicional</h2>
+        <p class="text-slate-300 leading-relaxed">Un servidor físico dedicado a una sola función puede quedar infrautilizado, ser costoso de ampliar y dificultar la creación rápida de nuevos entornos para pruebas, datos o IA.</p>
+      </div>
+      <div>
+        <span class="text-emerald-300 text-sm font-bold uppercase tracking-[0.18em]">Objetivo</span>
+        <h2 class="text-3xl font-black mt-3 mb-4">Modernizar el entorno</h2>
+        <p class="text-slate-300 leading-relaxed">El caso práctico busca optimizar recursos, reducir costos, mejorar escalabilidad y facilitar despliegues rápidos sin quedar atrapados en hardware dedicado.</p>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Contenido relacionado al PDF</h2>
+      <div class="grid lg:grid-cols-2 gap-12">
+        <p class="text-slate-300 text-lg leading-relaxed">El documento describe una empresa dedicada al análisis de grandes volúmenes de datos e inteligencia artificial. Su infraestructura necesita ejecutar bases de datos, entrenamiento de modelos y plataformas de visualización con eficiencia, flexibilidad y escalabilidad.</p>
+        <div class="space-y-3 text-slate-300 text-lg">
+          <p>• Virtualización completa para servidores críticos.</p>
+          <p>• Paravirtualización para reducir overhead.</p>
+          <p>• Contenedores para despliegues rápidos y cargas ligeras.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Infraestructura tradicional vs virtualizada</h2>
+      <div class="grid lg:grid-cols-2 gap-16">
+        <div>
+          <h3 class="text-2xl font-bold mb-5">Modelo tradicional</h3>
+          <div class="space-y-4 text-slate-300">
+            <p><b>Servidor físico 1:</b> base de datos.</p>
+            <p><b>Servidor físico 2:</b> aplicación web.</p>
+            <p><b>Servidor físico 3:</b> entrenamiento de modelos.</p>
+          </div>
+          <p class="text-slate-500 mt-5">Resultado: más hardware, más costo y menor flexibilidad.</p>
+        </div>
+        <div>
+          <h3 class="text-2xl font-bold mb-5">Modelo virtualizado</h3>
+          <div class="space-y-4 text-slate-300">
+            <p><b>Host físico:</b> concentra recursos de CPU, RAM, red y almacenamiento.</p>
+            <p><b>Hipervisor:</b> administra máquinas virtuales independientes.</p>
+            <p><b>VMs:</b> ejecutan datos, web, IA y monitoreo sobre el mismo host.</p>
+          </div>
+          <p class="text-slate-500 mt-5">Resultado: mejor uso de recursos y despliegue más flexible.</p>
+        </div>
+      </div>
+      <div class="animated-virtual-image rounded-2xl mt-10">
+        <img src="Virtualización completa.jpg" class="h-[360px] w-full object-cover" alt="Del servidor físico al entorno virtual">
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Beneficios y conceptos clave</h2>
+      <div class="grid lg:grid-cols-[1fr_.75fr] gap-12 items-center">
+        <div class="space-y-4 text-slate-300 text-lg">
+          <p><b class="text-cyan-300">Escalabilidad:</b> crear más VMs o aumentar recursos según demanda.</p>
+          <p><b class="text-indigo-300">Flexibilidad:</b> ejecutar distintos sistemas sobre la misma infraestructura.</p>
+          <p><b class="text-emerald-300">Reducción de costos:</b> menor desperdicio de hardware y energía.</p>
+          <p><b>Host:</b> servidor físico que entrega recursos.</p>
+          <p><b>Hipervisor:</b> capa que crea y administra VMs.</p>
+          <p><b>Máquina virtual:</b> entorno aislado con sistema operativo propio.</p>
+        </div>
+        <div class="tech-orbit" aria-hidden="true">
+          <span class="tech-core"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-6">Guion para exponer</h2>
+      <p class="text-slate-300 text-xl leading-relaxed max-w-5xl">“La virtualización permite que una empresa de datos e inteligencia artificial aproveche mejor su infraestructura física. En vez de usar un servidor por cada servicio, podemos crear varios entornos virtuales independientes sobre un mismo host. Esto reduce costos, facilita escalar y permite desplegar bases de datos, servicios de IA y plataformas web con mayor rapidez.”</p>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Características de un entorno virtualizado</h2>
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-5 text-slate-300 text-lg leading-relaxed">
+          <p><b class="text-cyan-300">Aislamiento:</b> cada VM trabaja separada, aunque comparta el mismo servidor físico.</p>
+          <p><b class="text-indigo-300">Abstracción:</b> el hardware real se presenta como recursos virtuales administrables.</p>
+          <p><b class="text-emerald-300">Consolidación:</b> varios servicios pueden ejecutarse en menos servidores físicos.</p>
+          <p><b class="text-pink-300">Elasticidad:</b> se puede aumentar o reducir capacidad según la demanda del proyecto.</p>
+        </div>
+        <svg viewBox="0 0 620 320" class="w-full" role="img" aria-label="Gráfico de beneficios de virtualización">
+          <text x="10" y="28" fill="#e5edf8" font-size="20" font-weight="800">Impacto esperado</text>
+          <g transform="translate(10 65)">
+            <text x="0" y="20" fill="#94a3b8" font-size="14">Uso de recursos</text>
+            <rect x="170" y="4" width="390" height="22" rx="11" fill="#172033"/>
+            <rect x="170" y="4" width="315" height="22" rx="11" fill="#22d3ee">
+              <animate attributeName="width" values="120;315;315" dur="2.2s" repeatCount="indefinite"/>
+            </rect>
+          </g>
+          <g transform="translate(10 125)">
+            <text x="0" y="20" fill="#94a3b8" font-size="14">Reducción de costos</text>
+            <rect x="170" y="4" width="390" height="22" rx="11" fill="#172033"/>
+            <rect x="170" y="4" width="280" height="22" rx="11" fill="#8b5cf6">
+              <animate attributeName="width" values="100;280;280" dur="2.4s" repeatCount="indefinite"/>
+            </rect>
+          </g>
+          <g transform="translate(10 185)">
+            <text x="0" y="20" fill="#94a3b8" font-size="14">Escalabilidad</text>
+            <rect x="170" y="4" width="390" height="22" rx="11" fill="#172033"/>
+            <rect x="170" y="4" width="345" height="22" rx="11" fill="#34d399">
+              <animate attributeName="width" values="130;345;345" dur="2.6s" repeatCount="indefinite"/>
+            </rect>
+          </g>
+          <g transform="translate(10 245)">
+            <text x="0" y="20" fill="#94a3b8" font-size="14">Disponibilidad</text>
+            <rect x="170" y="4" width="390" height="22" rx="11" fill="#172033"/>
+            <rect x="170" y="4" width="330" height="22" rx="11" fill="#f59e0b">
+              <animate attributeName="width" values="90;330;330" dur="2.8s" repeatCount="indefinite"/>
+            </rect>
+          </g>
+        </svg>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

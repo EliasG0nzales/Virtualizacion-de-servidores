@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Integrante 3 - Migración y Alta Disponibilidad</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, sans-serif; background: #070b14; color: #e5edf8; }
+    .grid-bg { background-image: linear-gradient(rgba(52,211,153,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(52,211,153,.08) 1px, transparent 1px); background-size: 72px 72px; }
+    .gradient-text { background: linear-gradient(135deg, #34d399, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .rule { border-top: 1px solid rgba(148, 163, 184, .18); }
+  </style>
+</head>
+<body>
+  <nav class="sticky top-0 z-30 border-b border-white/10 bg-slate-950/85 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between">
+      <a href="index.html#equipo" class="text-sm font-bold text-emerald-300 hover:text-white">← Volver al equipo</a>
+      <span class="text-sm text-slate-400">Integrante 3 · Continuidad</span>
+    </div>
+  </nav>
+
+  <header class="relative overflow-hidden grid-bg">
+    <div class="absolute inset-0 bg-gradient-to-b from-emerald-950/45 via-slate-950/40 to-slate-950"></div>
+    <div class="relative max-w-7xl mx-auto px-6 py-24">
+      <p class="text-emerald-300 font-bold uppercase tracking-[0.24em] text-sm">Migración, escalabilidad y HA</p>
+      <h1 class="text-5xl md:text-7xl font-black mt-4">Alta disponibilidad <span class="gradient-text">sin interrupciones</span></h1>
+      <p class="text-xl text-slate-300 mt-6 max-w-3xl leading-relaxed">Migración en vivo, consolidación de carga, balanceo y escalabilidad horizontal para mantener servicios activos.</p>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-16 space-y-16">
+    <section class="grid lg:grid-cols-[360px_1fr] gap-14 items-center">
+      <div class="rounded-2xl overflow-hidden min-h-[560px]">
+        <img src="Josias%20Cadenillas%20Tarazona.png" class="h-[560px] w-full object-cover" alt="Josias Cadenillas Tarazona">
+      </div>
+      <div>
+        <span class="text-emerald-300 text-sm font-bold uppercase tracking-[0.2em]">Integrante 3 · Continuidad operacional</span>
+        <h2 class="text-4xl font-black mt-4 mb-6">Josias Cadenillas Tarazona</h2>
+        <div class="space-y-4 text-slate-300 text-lg leading-relaxed">
+          <p><b class="text-white">Rol:</b> expositor de migración, escalabilidad y alta disponibilidad.</p>
+          <p><b class="text-white">Tema asignado:</b> vMotion, Live Migration, balanceo de carga, consolidación y arquitectura HA.</p>
+          <p><b class="text-white">Descripción:</b> explica cómo mover máquinas virtuales entre hosts sin apagar servicios, manteniendo continuidad en entornos de datos e IA.</p>
+          <p><b class="text-white">Debe destacar:</b> disponibilidad, monitoreo, métricas de rendimiento, failover y escalabilidad horizontal.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid lg:grid-cols-2 gap-12">
+      <div>
+        <h2 class="text-4xl font-black mb-6">Qué debe exponer</h2>
+        <p class="text-slate-300 text-lg leading-relaxed">La migración en vivo permite mover máquinas virtuales entre hosts sin apagar los servicios. Esto garantiza continuidad operacional durante mantenimiento, fallos parciales o balanceo de carga.</p>
+      </div>
+      <div>
+        <h2 class="text-4xl font-black mb-6">Relacionado al PDF</h2>
+        <p class="text-slate-300 text-lg leading-relaxed">La Operación 01 pide verificar vMotion o live migration y comprobar que el host soporte consolidación de carga sin degradación significativa.</p>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Flujo de migración en vivo</h2>
+      <div class="grid md:grid-cols-4 gap-8 text-lg text-slate-300">
+        <p><b class="text-emerald-300">Host A:</b><br>ejecuta la VM activa.</p>
+        <p><b class="text-cyan-300">Live Migration:</b><br>transfiere memoria y estado.</p>
+        <p><b class="text-indigo-300">Host B:</b><br>recibe la VM sin apagarla.</p>
+        <p><b class="text-white">Servicio:</b><br>continúa disponible para usuarios.</p>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Dashboard de monitoreo</h2>
+      <div class="grid md:grid-cols-4 gap-8">
+        <p class="text-slate-300 text-lg"><b class="text-emerald-300 text-4xl block mb-2">99.9%</b>Disponibilidad objetivo.</p>
+        <p class="text-slate-300 text-lg"><b class="text-cyan-300 text-4xl block mb-2">64%</b>CPU promedio.</p>
+        <p class="text-slate-300 text-lg"><b class="text-indigo-300 text-4xl block mb-2">72%</b>RAM utilizada.</p>
+        <p class="text-slate-300 text-lg"><b class="text-amber-300 text-4xl block mb-2">Live</b>Migración activa.</p>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Arquitectura HA</h2>
+      <div class="grid lg:grid-cols-3 gap-12 text-lg text-slate-300">
+        <p><b class="text-white">Host primario:</b> ejecuta las cargas principales, como bases de datos o servicios de IA.</p>
+        <p><b class="text-emerald-300">Cluster HA:</b> detecta fallos, balancea recursos y coordina recuperación.</p>
+        <p><b class="text-white">Host secundario:</b> recibe VMs migradas o reiniciadas ante mantenimiento o falla.</p>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-6">Guion para exponer</h2>
+      <p class="text-slate-300 text-xl leading-relaxed max-w-5xl">“La migración en vivo permite mover una máquina virtual de un host a otro sin apagar el servicio. Esto es fundamental en ciencia de datos e IA porque los procesos pueden ser largos y críticos. Además, la alta disponibilidad y el balanceo de carga ayudan a mantener la plataforma estable.”</p>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Gráfico de balanceo de carga</h2>
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <svg viewBox="0 0 640 360" class="w-full" role="img" aria-label="Diagrama de balanceo entre hosts">
+          <defs>
+            <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L9,3 z" fill="#22d3ee"/>
+            </marker>
+          </defs>
+          <text x="20" y="30" fill="#e5edf8" font-size="20" font-weight="800">Migración y redistribución</text>
+          <rect x="35" y="90" width="170" height="120" rx="12" fill="#111827" stroke="#34d399"/>
+          <text x="78" y="145" fill="#34d399" font-size="18" font-weight="800">Host A</text>
+          <text x="70" y="175" fill="#94a3b8" font-size="13">CPU 84%</text>
+          <rect x="435" y="90" width="170" height="120" rx="12" fill="#111827" stroke="#818cf8"/>
+          <text x="478" y="145" fill="#818cf8" font-size="18" font-weight="800">Host B</text>
+          <text x="470" y="175" fill="#94a3b8" font-size="13">CPU 38%</text>
+          <circle cx="320" cy="150" r="42" fill="#0f172a" stroke="#22d3ee"/>
+          <text x="300" y="156" fill="#e5edf8" font-size="18" font-weight="800">VM</text>
+          <line x1="205" y1="150" x2="275" y2="150" stroke="#22d3ee" stroke-width="3" marker-end="url(#arrow)">
+            <animate attributeName="x2" values="230;275;275" dur="2s" repeatCount="indefinite"/>
+          </line>
+          <line x1="362" y1="150" x2="435" y2="150" stroke="#22d3ee" stroke-width="3" marker-end="url(#arrow)">
+            <animate attributeName="x2" values="385;435;435" dur="2s" repeatCount="indefinite"/>
+          </line>
+          <text x="226" y="280" fill="#94a3b8" font-size="15">El servicio permanece activo durante el movimiento.</text>
+        </svg>
+        <div class="space-y-5 text-slate-300 text-lg leading-relaxed">
+          <p><b class="text-emerald-300">Detección:</b> el sistema identifica saturación, mantenimiento o riesgo de falla.</p>
+          <p><b class="text-cyan-300">Transferencia:</b> memoria y estado de la VM se copian al host destino.</p>
+          <p><b class="text-indigo-300">Continuidad:</b> el usuario sigue accediendo al servicio sin interrupción visible.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Características de alta disponibilidad</h2>
+      <div class="grid md:grid-cols-2 gap-x-16 gap-y-5 text-slate-300 text-lg">
+        <p><b class="text-emerald-300">Redundancia:</b> varios hosts pueden asumir cargas críticas.</p>
+        <p><b class="text-emerald-300">Failover:</b> reinicio o traslado automático ante fallo.</p>
+        <p><b class="text-emerald-300">Monitoreo:</b> control continuo de CPU, RAM, red y almacenamiento.</p>
+        <p><b class="text-emerald-300">Mantenimiento:</b> permite intervenir hosts sin apagar servicios.</p>
+        <p><b class="text-emerald-300">Escalabilidad horizontal:</b> crecimiento agregando nodos al cluster.</p>
+        <p><b class="text-emerald-300">SLA:</b> ayuda a cumplir niveles de disponibilidad definidos.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

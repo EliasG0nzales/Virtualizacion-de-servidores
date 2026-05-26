@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtualiza Servidores - Infraestructura en la Nube</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #0a0e1a; color: #e2e8f0; overflow-x: hidden; }
+        
+        #video-background {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            pointer-events: none;
+            filter: brightness(0.78) saturate(1.08) contrast(1.04);
+        }
+
+        .video-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background:
+                radial-gradient(circle at 62% 38%, rgba(16, 185, 129, 0.12), transparent 32%),
+                linear-gradient(90deg, rgba(10, 14, 26, 0.52), rgba(10, 14, 26, 0.28) 48%, rgba(10, 14, 26, 0.5));
+        }
+
+        #inicio { isolation: isolate; background: #0a0e1a; }
+
+        .section-video-band {
+            position: relative;
+            overflow: hidden;
+            isolation: isolate;
+            background: #0a0e1a;
+        }
+
+        .section-video-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            z-index: 0;
+            pointer-events: none;
+            filter: brightness(1.24) saturate(1.2) contrast(1.02);
+        }
+
+        .section-video-band::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background: linear-gradient(180deg, rgba(10, 14, 26, 0.02), transparent 45%, rgba(10, 14, 26, 0.02));
+        }
+
+        .section-video-band > section {
+            position: relative;
+            z-index: 2;
+            background: transparent;
+        }
+
+        #network-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        
+        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-card { background: rgba(30, 41, 59, 0.4); backdrop-filter: blur(16px); border: 1px solid rgba(99, 102, 241, 0.15); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .glass-card:hover { background: rgba(30, 41, 59, 0.6); border-color: rgba(99, 102, 241, 0.4); transform: translateY(-8px) scale(1.02); box-shadow: 0 20px 40px -10px rgba(99, 102, 241, 0.3); }
+        
+        .gradient-text {
+            background: linear-gradient(120deg, #ecfdf5 0%, #34d399 24%, #0f766e 52%, #86efac 76%, #ecfdf5 100%);
+            background-size: 280% 280%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.35));
+            animation: gradientFlow 7s ease-in-out infinite;
+        }
+
+        @keyframes gradientFlow {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .aurora-btn {
+            --rad: 999px;
+            --color-layer-a: #34d399;
+            --color-layer-b: #052e2b;
+            position: relative;
+            isolation: isolate;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            overflow-clip-margin: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.26);
+            border-radius: var(--rad);
+            color: #ffffff;
+            background: linear-gradient(135deg, #042f2e 0%, #064e3b 52%, #022c22 100%);
+            box-shadow: inset 0 0 16px rgba(16, 185, 129, 0.34), 0 12px 34px rgba(6, 78, 59, 0.42);
+            font-weight: 700;
+            letter-spacing: 0;
+            text-shadow: 0 1px 10px rgba(4, 120, 87, 0.55);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, filter 0.25s ease;
+            filter: saturate(0.9) brightness(1.2);
+        }
+
+        .aurora-btn::before,
+        .aurora-btn::after {
+            content: "";
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .aurora-btn::before {
+            left: -150%;
+            width: 420%;
+            aspect-ratio: 1;
+            background: radial-gradient(
+                ellipse at 65% 180%,
+                var(--color-layer-a),
+                var(--color-layer-b),
+                #10b981,
+                #0f766e,
+                #bbf7d0,
+                var(--color-layer-b),
+                #14b8a6,
+                #064e3b,
+                var(--color-layer-a)
+            );
+            mix-blend-mode: soft-light;
+            animation: rotate 18s linear infinite;
+            opacity: 0.95;
+            z-index: 0;
+        }
+
+        .aurora-btn::after {
+            top: 16%;
+            left: 10%;
+            width: 80%;
+            height: 1.5rem;
+            border-radius: 999px;
+            background: rgba(167, 243, 208, 0.32);
+            filter: blur(7px);
+            animation: pulse 3s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        .aurora-btn .btn-label {
+            position: relative;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+        }
+
+        .aurora-btn:hover {
+            transform: translateY(-2px) scale(1.03);
+            border-color: rgba(255, 255, 255, 0.58);
+            box-shadow: inset 0 0 18px rgba(52, 211, 153, 0.42), 0 18px 44px rgba(16, 185, 129, 0.34);
+            filter: saturate(1.08) brightness(1.35);
+        }
+
+        .aurora-btn:hover .btn-label { transform: scale(1.06); }
+        .aurora-btn:active .btn-label { transform: scale(0.96); }
+
+        .aurora-btn-sm { min-height: 2.55rem; padding: 0.6rem 1.5rem; font-size: 0.875rem; }
+        .aurora-btn-lg { min-height: 3.5rem; padding: 0.95rem 2rem; font-size: 1.125rem; }
+        .aurora-btn-tab { min-height: 2.75rem; min-width: 5.5rem; padding: 0.7rem 1.45rem; font-size: 0.875rem; }
+        .aurora-btn-icon { width: 2.75rem; height: 2.75rem; padding: 0; font-size: 1.35rem; }
+
+        @keyframes rotate {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.95; }
+            50% { opacity: 0.18; }
+        }
+        
+        .server-model {
+            position: relative;
+            width: min(100%, 520px);
+            min-height: 420px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            perspective: 1100px;
+        }
+
+        .server-image-wrap {
+            position: relative;
+            width: 100%;
+            animation: serverDrift 7s ease-in-out infinite;
+            filter: drop-shadow(0 34px 45px rgba(16, 185, 129, 0.18));
+        }
+
+        .server-image-wrap img {
+            width: 100%;
+            display: block;
+            transform: rotateY(-7deg) rotateX(3deg);
+            transition: transform 0.45s ease, filter 0.45s ease;
+        }
+
+        .server-image-wrap:hover img { transform: rotateY(-2deg) rotateX(1deg) scale(1.02); }
+
+        @keyframes serverDrift {
+            0%, 100% { transform: translateY(0) rotateZ(-0.4deg); }
+            50% { transform: translateY(-14px) rotateZ(0.5deg); }
+        }
+        
+        @keyframes serverPulse {
+            0%, 100% { opacity: 0.7; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+            50% { opacity: 1; box-shadow: 0 0 30px rgba(59, 130, 246, 0.6); }
+        }
+        
+        .led { width: 6px; height: 6px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981; animation: ledBlink 1.5s ease-in-out infinite; }
+        .led:nth-child(2n) { animation-delay: 0.3s; background: #3b82f6; box-shadow: 0 0 8px #3b82f6; }
+        .led:nth-child(3n) { animation-delay: 0.6s; background: #f59e0b; box-shadow: 0 0 8px #f59e0b; }
+        
+        @keyframes ledBlink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+        
+        .float { animation: float 6s ease-in-out infinite; }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        .float-delay { animation-delay: -3s; }
+        
+        .hex { width: 60px; height: 68px; background: rgba(99, 102, 241, 0.1); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; cursor: pointer; }
+        .hex:hover { background: rgba(99, 102, 241, 0.4); transform: scale(1.1); }
+        
+        .icon-nav {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+        }
+
+        .icon-nav li {
+            position: relative;
+            list-style: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 999px;
+            background: rgba(248, 250, 252, 0.96);
+            box-shadow: 0 10px 25px rgba(2, 44, 34, 0.22);
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: visible;
+            transition: width 0.45s ease, box-shadow 0.45s ease, transform 0.45s ease;
+        }
+
+        .icon-nav li::before,
+        .icon-nav li::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 999px;
+            background: linear-gradient(45deg, var(--i), var(--j));
+            opacity: 0;
+            transition: opacity 0.45s ease;
+        }
+
+        .icon-nav li::after {
+            top: 10px;
+            z-index: -1;
+            filter: blur(15px);
+        }
+
+        .icon-nav li:hover {
+            width: 168px;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(2, 44, 34, 0);
+        }
+
+        .icon-nav li:hover::before { opacity: 1; }
+        .icon-nav li:hover::after { opacity: 0.55; }
+
+        .icon-nav a {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 999px;
+            color: #334155;
+        }
+
+        .icon-nav ion-icon {
+            position: absolute;
+            font-size: 1.45rem;
+            transition: transform 0.35s ease, opacity 0.35s ease, color 0.35s ease;
+            transition-delay: 0.16s;
+        }
+
+        .icon-nav .title {
+            position: absolute;
+            color: #ffffff;
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            transform: scale(0.35);
+            opacity: 0;
+            transition: transform 0.35s ease, opacity 0.35s ease;
+        }
+
+        .icon-nav li:hover ion-icon {
+            transform: scale(0);
+            opacity: 0;
+            color: #ffffff;
+            transition-delay: 0s;
+        }
+
+        .icon-nav li:hover .title {
+            transform: scale(1);
+            opacity: 1;
+            transition-delay: 0.16s;
+        }
+        
+        .mobile-menu { transform: translateX(100%); transition: transform 0.3s ease; }
+        .mobile-menu.active { transform: translateX(0); }
+        
+        #loader { position: fixed; inset: 0; background: #0a0e1a; z-index: 9999; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
+        .loader-svg { display: block; width: 12em; height: 12em; overflow: visible; filter: drop-shadow(0 0 18px rgba(16, 185, 129, 0.22)); }
+        .loader-svg path.fill { fill: rgba(16, 185, 129, 0.16); animation: fillPulse 4s ease-in-out infinite; }
+        .loader-svg .dash path {
+            stroke: #34d399;
+            stroke-width: 1px;
+            stroke-linecap: round;
+            animation: dashArray var(--sped, 2s) ease-in-out infinite, dashOffset var(--sped, 2s) linear infinite;
+        }
+        .loader-svg .dash path.aaa {
+            stroke-width: 2px;
+            stroke-linecap: butt;
+            clip-path: path('M 20.4603 48.5493 L 16.6461 46.9584 C 17.3209 48.3794 18.4917 49.5682 20.0447 50.2206 C 23.4007 51.6328 27.2707 50.0262 28.6694 46.6367 C 29.3464 44.9966 29.3509 43.1867 28.6806 41.5422 C 28.0103 39.8977 26.7434 38.6151 25.119 37.9315 C 23.5035 37.2544 21.7741 37.279 20.2547 37.8576 L 24.1961 39.5022 C 26.6719 40.5434 27.8427 43.4124 26.8104 45.9105 C 25.7803 48.4085 22.936 49.5905 20.4603 48.5493 Z');
+        }
+        .loader-svg .dash path.big { stroke-width: 2px; filter: drop-shadow(0 0 3px #34d399); }
+        @keyframes dashArray {
+            0% { stroke-dasharray: 0 1 359 0; }
+            50% { stroke-dasharray: 0 359 1 0; }
+            100% { stroke-dasharray: 359 1 0 0; }
+        }
+        @keyframes dashOffset {
+            0% { stroke-dashoffset: -5; }
+            100% { stroke-dashoffset: -365; }
+        }
+        @keyframes fillPulse {
+            30%, 55% { fill: rgba(16, 185, 129, 0); }
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .tab-btn.aurora-btn:not(.active) {
+            background: rgba(6, 31, 30, 0.62);
+            border-color: rgba(45, 212, 191, 0.18);
+            box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.14);
+            filter: saturate(0.75) brightness(0.9);
+        }
+
+        .tab-btn.aurora-btn:not(.active)::before { opacity: 0.22; }
+        .tab-btn.aurora-btn:not(.active)::after { opacity: 0.08; }
+        .tab-btn.aurora-btn.active { color: white; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 4px; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Loading Screen -->
+    <div id="loader">
+        <div class="flex flex-col items-center gap-4">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="loader-svg" aria-hidden="true">
+                <g class="dash">
+                    <path style="--sped: 4s;" pathLength="360" d="M 31.9463 1 C 15.6331 1 2.2692 13.6936 1 29.8237 L 17.644 36.7682 C 19.0539 35.794 20.7587 35.2264 22.5909 35.2264 C 22.7563 35.2264 22.9194 35.231 23.0803 35.2399 L 30.4828 24.412 L 30.4828 24.2601 C 30.4828 17.7446 35.7359 12.4423 42.1933 12.4423 C 48.6507 12.4423 53.9038 17.7446 53.9038 24.2601 C 53.9038 30.7756 48.6507 36.08 42.1933 36.08 C 42.104 36.08 42.0168 36.0778 41.9275 36.0755 L 31.3699 43.6747 C 31.3766 43.8155 31.3811 43.9562 31.3811 44.0947 C 31.3811 48.9881 27.4374 52.9675 22.5909 52.9675 C 18.3367 52.9675 14.7773 49.902 13.9729 45.8443 L 2.068 40.8772 C 5.7548 54.0311 17.7312 63.6748 31.9463 63.6748 C 49.0976 63.6748 63 49.6428 63 32.3374 C 63 15.0297 49.0976 1 31.9463 1 Z" class="big"></path>
+                    <path pathLength="360" d="M 20.4603 48.5493 L 16.6461 46.9584 C 17.3209 48.3794 18.4917 49.5682 20.0447 50.2206 C 23.4007 51.6328 27.2707 50.0262 28.6694 46.6367 C 29.3464 44.9966 29.3509 43.1867 28.6806 41.5422 C 28.0103 39.8977 26.7434 38.6151 25.119 37.9315 C 23.5035 37.2544 21.7741 37.279 20.2547 37.8576 L 24.1961 39.5022 C 26.6719 40.5434 27.8427 43.4124 26.8104 45.9105 C 25.7803 48.4085 22.936 49.5905 20.4603 48.5493 Z" class="aaa"></path>
+                    <path pathLength="360" d="M 49.9968 24.2603 C 49.9968 19.9188 46.4954 16.384 42.1943 16.384 C 37.8908 16.384 34.3894 19.9188 34.3894 24.2603 C 34.3894 28.6017 37.8908 32.1343 42.1943 32.1343 C 46.4954 32.1343 49.9968 28.6017 49.9968 24.2603 Z"></path>
+                    <path pathLength="360" d="M 36.3446 24.2469 C 36.3446 20.9802 38.97 18.3324 42.2054 18.3324 C 45.4431 18.3324 48.0685 20.9802 48.0685 24.2469 C 48.0685 27.5135 45.4431 30.1613 42.2054 30.1613 C 38.97 30.1613 36.3446 27.5135 36.3446 24.2469 Z"></path>
+                </g>
+                <path pathLength="360" d="M 31.9463 1 C 15.6331 1 2.2692 13.6936 1 29.8237 L 17.644 36.7682 C 19.0539 35.794 20.7587 35.2264 22.5909 35.2264 C 22.7563 35.2264 22.9194 35.231 23.0803 35.2399 L 30.4828 24.412 L 30.4828 24.2601 C 30.4828 17.7446 35.7359 12.4423 42.1933 12.4423 C 48.6507 12.4423 53.9038 17.7446 53.9038 24.2601 C 53.9038 30.7756 48.6507 36.08 42.1933 36.08 C 42.104 36.08 42.0168 36.0778 41.9275 36.0755 L 31.3699 43.6747 C 31.3766 43.8155 31.3811 43.9562 31.3811 44.0947 C 31.3811 48.9881 27.4374 52.9675 22.5909 52.9675 C 18.3367 52.9675 14.7773 49.902 13.9729 45.8443 L 2.068 40.8772 C 5.7548 54.0311 17.7312 63.6748 31.9463 63.6748 C 49.0976 63.6748 63 49.6428 63 32.3374 C 63 15.0297 49.0976 1 31.9463 1 Z" fill="#111827"></path>
+                <path class="fill" pathLength="360" d="M 31.9463 1 C 15.6331 1 2.2692 13.6936 1 29.8237 L 17.644 36.7682 C 19.0539 35.794 20.7587 35.2264 22.5909 35.2264 C 22.7563 35.2264 22.9194 35.231 23.0803 35.2399 L 30.4828 24.412 L 30.4828 24.2601 C 30.4828 17.7446 35.7359 12.4423 42.1933 12.4423 C 48.6507 12.4423 53.9038 17.7446 53.9038 24.2601 C 53.9038 30.7756 48.6507 36.08 42.1933 36.08 C 42.104 36.08 42.0168 36.0778 41.9275 36.0755 L 31.3699 43.6747 C 31.3766 43.8155 31.3811 43.9562 31.3811 44.0947 C 31.3811 48.9881 27.4374 52.9675 22.5909 52.9675 C 18.3367 52.9675 14.7773 49.902 13.9729 45.8443 L 2.068 40.8772 C 5.7548 54.0311 17.7312 63.6748 31.9463 63.6748 C 49.0976 63.6748 63 49.6428 63 32.3374 C 63 15.0297 49.0976 1 31.9463 1 Z"></path>
+            </svg>
+            <p class="text-emerald-400 font-medium animate-pulse">Inicializando servidores...</p>
+        </div>
+    </div>
+
+    <!-- Network Canvas Background -->
+    <canvas id="network-canvas"></canvas>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 glass border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-3 cursor-pointer group">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-500 to-green-900 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-emerald-500/25">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+                        </svg>
+                    </div>
+                    <span class="text-xl font-bold gradient-text">Virtualiza</span>
+                </div>
+
+                <ul class="icon-nav hidden md:flex">
+                    <li style="--i:#064e3b;--j:#10b981">
+                        <a href="#inicio" aria-label="Inicio">
+                            <ion-icon name="home-outline"></ion-icon>
+                            <span class="title">Inicio</span>
+                        </a>
+                    </li>
+                    <li style="--i:#065f46;--j:#34d399">
+                        <a href="#equipo" aria-label="Integrantes">
+                            <ion-icon name="people-outline"></ion-icon>
+                            <span class="title">Integrantes</span>
+                        </a>
+                    </li>
+                    <li style="--i:#0f766e;--j:#2dd4bf">
+                        <a href="#arquitectura" aria-label="Arquitectura">
+                            <ion-icon name="git-network-outline"></ion-icon>
+                            <span class="title">Arquitectura</span>
+                        </a>
+                    </li>
+                    <li style="--i:#166534;--j:#84cc16">
+                        <a href="#comparativas" aria-label="Comparativas">
+                            <ion-icon name="bar-chart-outline"></ion-icon>
+                            <span class="title">Comparativas</span>
+                        </a>
+                    </li>
+                    <li style="--i:#022c22;--j:#22c55e">
+                        <a href="#preguntas" aria-label="Preguntas">
+                            <ion-icon name="help-circle-outline"></ion-icon>
+                            <span class="title">Preguntas</span>
+                        </a>
+                    </li>
+                </ul>
+
+                <button id="mobile-toggle" class="md:hidden text-white p-2">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 w-80 h-full bg-slate-900/95 backdrop-blur-xl z-50 p-8 md:hidden">
+            <button id="close-menu" class="absolute top-6 right-6 text-white">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            <div class="flex flex-col gap-6 mt-16">
+                <a href="#inicio" class="text-lg font-medium text-white hover:text-emerald-400 transition-colors">Inicio</a>
+                <a href="#equipo" class="text-lg font-medium text-white hover:text-emerald-400 transition-colors">Integrantes</a>
+                <a href="#arquitectura" class="text-lg font-medium text-white hover:text-emerald-400 transition-colors">Arquitectura</a>
+                <a href="#comparativas" class="text-lg font-medium text-white hover:text-emerald-400 transition-colors">Comparativas</a>
+                <a href="#preguntas" class="aurora-btn aurora-btn-sm mt-4">
+                    <span class="btn-label">Preguntas</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <video id="video-background" autoplay muted loop playsinline preload="auto">
+            <source src="7914842-hd_1920_1080_30fps.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+
+        <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-12 items-center">
+            <div class="text-center lg:text-left">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6 animate-fade-in">
+                    <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+                    <span class="text-sm text-emerald-300 font-medium">Infraestructura Cloud Activa</span>
+                </div>
+                
+                <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight mb-6">
+                    <span class="block text-white">Virtualiza tus</span>
+                    <span class="gradient-text" id="hero-text">Servidores</span>
+                </h1>
+                
+                <p class="text-lg sm:text-xl text-slate-400 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
+                    Transforma tu infraestructura física en recursos virtuales escalables. 
+                    Maximiza el rendimiento, minimiza costos y opera con total flexibilidad.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <a href="#equipo" class="group aurora-btn aurora-btn-lg">
+                        <span class="btn-label">
+                            Ver exposición
+                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                            </svg>
+                        </span>
+                    </a>
+                    <a href="#comparativas" class="px-8 py-4 rounded-full glass text-white font-semibold text-lg hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Ver comparativas
+                    </a>
+                </div>
+
+                <div class="mt-12 flex items-center gap-8 justify-center lg:justify-start text-slate-500">
+                    <div class="flex -space-x-3">
+                        <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-emerald-600 flex items-center justify-center text-xs text-white font-bold">01</div>
+                        <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-teal-600 flex items-center justify-center text-xs text-white font-bold">02</div>
+                        <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-cyan-600 flex items-center justify-center text-xs text-white font-bold">03</div>
+                        <div class="w-10 h-10 rounded-full border-2 border-slate-900 bg-slate-700 flex items-center justify-center text-xs text-white font-bold">+3</div>
+                    </div>
+                    <p class="text-sm">Exposición organizada para 6 integrantes</p>
+                </div>
+            </div>
+
+            <!-- 3D Server Visualization -->
+            <div class="relative flex justify-center items-center">
+                <div class="server-model float">
+                    <div class="server-image-wrap">
+                        <img src="servidor.png" alt="Servidor físico con máquinas virtuales">
+                    </div>
+                    <div class="absolute -inset-4 bg-gradient-to-r from-emerald-500/20 to-teal-500/20 rounded-3xl blur-2xl -z-10"></div>
+                </div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Team Exposition Section -->
+    <section id="equipo" class="relative py-24 bg-slate-900/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-reveal">
+                <p class="text-emerald-300 font-semibold uppercase tracking-[0.2em] text-sm mb-3">Grupo de 6 personas</p>
+                <h2 class="text-4xl sm:text-5xl font-bold mb-4">
+                    <span class="gradient-text">Distribución de la exposición</span>
+                </h2>
+                <p class="text-slate-400 text-lg max-w-3xl mx-auto">
+                    Cada integrante desarrolla una parte del caso práctico: desde el contexto del proyecto hasta la aplicación real en entornos de ciencia de datos e IA.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
+                <article class="glass-card rounded-2xl p-8 scroll-reveal">
+                    <div class="mb-6 relative overflow-hidden rounded-2xl h-48 border border-white/10">
+                        <img src="introduccion y objetivos.jpg" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Introducción y objetivos de virtualización">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent"></div>
+                        <span class="absolute bottom-4 left-4 text-white font-bold">Introducción y objetivos</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-sm font-bold text-emerald-300">Integrante 1</span>
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs">Contexto</span>
+                    </div>
+                    <div class="mb-6 flex items-center gap-4 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4">
+                        <img src="Elias%20Gonzales%20Jenhua.png" class="h-16 w-16 rounded-full object-cover border border-emerald-300/40" alt="Elias Gonzales Jenhua">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.18em] text-emerald-300">Nombre y apellido</p>
+                            <p class="text-lg font-bold text-white">Elias Gonzales Jenhua</p>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Introducción y objetivos</h3>
+                    <p class="text-slate-400 leading-relaxed mb-5">
+                        Explica qué es la virtualización, por qué es importante en empresas de IA y ciencia de datos, y qué problema resuelve frente a servidores físicos tradicionales.
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>• Virtualización, host, hipervisor y VM</li>
+                        <li>• Escalabilidad, flexibilidad y reducción de costos</li>
+                        <li>• Objetivo general del caso práctico</li>
+                    </ul>
+                    <a href="integrante1.html" class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition-all hover:scale-[1.02] hover:bg-emerald-500">Ver página del integrante</a>
+                </article>
+
+                <article class="glass-card rounded-2xl p-8 scroll-reveal">
+                    <div class="mb-6 relative overflow-hidden rounded-2xl h-48 border border-white/10">
+                        <img src="Virtualización completa.jpg" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Virtualización completa">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent"></div>
+                        <span class="absolute bottom-4 left-4 text-white font-bold">Virtualización completa</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-sm font-bold text-cyan-300">Integrante 2</span>
+                        <span class="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-300 text-xs">Operación 01</span>
+                    </div>
+                    <div class="mb-6 flex items-center gap-4 rounded-2xl border border-cyan-400/20 bg-cyan-400/10 p-4">
+                        <img src="Jos%C3%A9%20Feliciano%20Garc%C3%ADa%20Dionicio.png" class="h-16 w-16 rounded-full object-cover border border-cyan-300/40" alt="José Feliciano García Dionicio">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.18em] text-cyan-300">Nombre y apellido</p>
+                            <p class="text-lg font-bold text-white">José Feliciano García Dionicio</p>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Virtualización completa</h3>
+                    <p class="text-slate-400 leading-relaxed mb-5">
+                        Presenta hipervisores bare-metal como VMware ESXi, XenServer y KVM, junto con la creación de máquinas virtuales completas.
+                    </p>
+                    <div class="grid grid-cols-3 gap-2 mb-5">
+                        <img src="integrante%202.0.jpeg" class="rounded-lg h-20 w-full object-cover border border-white/10" alt="Evidencia integrante 2">
+                        <img src="integrante%202.1.jpeg" class="rounded-lg h-20 w-full object-cover border border-white/10" alt="Arquitectura virtualización completa">
+                        <img src="integrante%202.2.jpeg" class="rounded-lg h-20 w-full object-cover border border-white/10" alt="Recursos de máquinas virtuales">
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>• Asignación de CPU, RAM, red y almacenamiento</li>
+                        <li>• Sistemas operativos invitados independientes</li>
+                        <li>• Arquitectura Host → Hipervisor → VM</li>
+                    </ul>
+                    <a href="integrante2.html" class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-cyan-600 px-5 py-3 text-sm font-bold text-white transition-all hover:scale-[1.02] hover:bg-cyan-500">Ver página del integrante</a>
+                </article>
+
+                <article class="glass-card rounded-2xl p-8 scroll-reveal">
+                    <div class="mb-6 relative overflow-hidden rounded-2xl h-48 border border-white/10">
+                        <img src="Migración y alta disponibilidad.jpg" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Migración y alta disponibilidad">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent"></div>
+                        <span class="absolute bottom-4 left-4 text-white font-bold">Migración y alta disponibilidad</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-sm font-bold text-emerald-300">Integrante 3</span>
+                        <span class="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-300 text-xs">Continuidad</span>
+                    </div>
+                    <div class="mb-6 flex items-center gap-4 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4">
+                        <img src="Josias%20Cadenillas%20Tarazona.png" class="h-16 w-16 rounded-full object-cover border border-emerald-300/40" alt="Josias Cadenillas Tarazona">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.18em] text-emerald-300">Nombre y apellido</p>
+                            <p class="text-lg font-bold text-white">Josias Cadenillas Tarazona</p>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Migración y alta disponibilidad</h3>
+                    <p class="text-slate-400 leading-relaxed mb-5">
+                        Explica vMotion, Live Migration, consolidación de carga y escalabilidad horizontal para mantener servicios activos sin interrupciones.
+                    </p>
+                    <div class="grid grid-cols-2 gap-3 mb-5">
+                        <div class="rounded-xl border border-emerald-400/20 bg-emerald-400/10 p-4">
+                            <p class="text-xs text-slate-400">VM activa</p>
+                            <p class="text-lg font-bold text-emerald-300">Host A → Host B</p>
+                        </div>
+                        <div class="rounded-xl border border-emerald-400/20 bg-emerald-400/10 p-4">
+                            <p class="text-xs text-slate-400">Servicio</p>
+                            <p class="text-lg font-bold text-emerald-300">Sin apagado</p>
+                        </div>
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>• Migración en vivo entre hosts</li>
+                        <li>• Balanceo de carga y HA</li>
+                        <li>• Métricas para validar rendimiento</li>
+                    </ul>
+                    <a href="integrante3.html" class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition-all hover:scale-[1.02] hover:bg-emerald-500">Ver página del integrante</a>
+                </article>
+
+                <article class="glass-card rounded-2xl p-8 scroll-reveal">
+                    <div class="mb-6 relative overflow-hidden rounded-2xl h-48 border border-white/10">
+                        <img src="Paravirtualización.jpg" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Paravirtualización">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent"></div>
+                        <span class="absolute bottom-4 left-4 text-white font-bold">Paravirtualización</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-sm font-bold text-teal-300">Integrante 4</span>
+                        <span class="px-3 py-1 rounded-full bg-teal-500/10 text-teal-300 text-xs">Operación 02</span>
+                    </div>
+                    <div class="mb-6 flex items-center gap-4 rounded-2xl border border-teal-400/20 bg-teal-400/10 p-4">
+                        <img src="Luis%20Adrian%20Cervera%20Pardo.png" class="h-16 w-16 rounded-full object-cover border border-teal-300/40" alt="Luis Adrian Cervera Pardo">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.18em] text-teal-300">Nombre y apellido</p>
+                            <p class="text-lg font-bold text-white">Luis Adrian Cervera Pardo</p>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Paravirtualización</h3>
+                    <p class="text-slate-400 leading-relaxed mb-5">
+                        Describe cómo el sistema operativo invitado coopera con el hipervisor mediante hypercalls para reducir overhead y mejorar rendimiento.
+                    </p>
+                    <div class="grid grid-cols-4 gap-2 mb-5">
+                        <img src="integrante%204.0.jpeg" class="rounded-lg h-16 w-full object-cover border border-white/10" alt="Evidencia integrante 4">
+                        <img src="integrante%204.1.jpeg" class="rounded-lg h-16 w-full object-cover border border-white/10" alt="Hypercalls">
+                        <img src="integrante%204.2.jpeg" class="rounded-lg h-16 w-full object-cover border border-white/10" alt="Kernel modificado">
+                        <img src="integrante%204.3.jpeg" class="rounded-lg h-16 w-full object-cover border border-white/10" alt="Benchmark paravirtualización">
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>• Kernel modificado o drivers específicos</li>
+                        <li>• Menor latencia y menor uso de CPU</li>
+                        <li>• Comparación frente a virtualización completa</li>
+                    </ul>
+                    <a href="integrante4.html" class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-teal-600 px-5 py-3 text-sm font-bold text-white transition-all hover:scale-[1.02] hover:bg-teal-500">Ver página del integrante</a>
+                </article>
+
+                <article class="glass-card rounded-2xl p-8 scroll-reveal">
+                    <div class="mb-6 relative overflow-hidden rounded-2xl h-48 border border-white/10">
+                        <img src="Contenedores y Docker.jpeg" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Contenedores y Docker">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent"></div>
+                        <span class="absolute bottom-4 left-4 text-white font-bold">Contenedores y Docker</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-sm font-bold text-lime-300">Integrante 5</span>
+                        <span class="px-3 py-1 rounded-full bg-lime-500/10 text-lime-300 text-xs">Operación 03</span>
+                    </div>
+                    <div class="mb-6 flex items-center gap-4 rounded-2xl border border-lime-400/20 bg-lime-400/10 p-4">
+                        <img src="Milton%20Anderson%20Ricra.png" class="h-16 w-16 rounded-full object-cover border border-lime-300/40" alt="Milton Anderson Ricra">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.18em] text-lime-300">Nombre y apellido</p>
+                            <p class="text-lg font-bold text-white">Milton Anderson Ricra</p>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Contenedores y Docker</h3>
+                    <p class="text-slate-400 leading-relaxed mb-5">
+                        Expone virtualización a nivel de sistema operativo con Docker y LXC para microservicios, APIs de IA y despliegues rápidos.
+                    </p>
+                    <div class="grid grid-cols-3 gap-2 mb-5">
+                        <img src="integrante%205.0.jpeg" class="rounded-lg h-20 w-full object-cover border border-white/10" alt="Evidencia Docker">
+                        <img src="integrante%205.1.jpeg" class="rounded-lg h-20 w-full object-cover border border-white/10" alt="Arquitectura contenedores">
+                        <img src="integrante%205.2.jpeg" class="rounded-lg h-20 w-full object-cover border border-white/10" alt="Microservicios IA">
+                    </div>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>• Comparte el kernel del host</li>
+                        <li>• Mayor rapidez y menor peso que una VM</li>
+                        <li>• Límites de CPU, memoria, red y storage</li>
+                    </ul>
+                    <a href="integrante5.html" class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-lime-700 px-5 py-3 text-sm font-bold text-white transition-all hover:scale-[1.02] hover:bg-lime-600">Ver página del integrante</a>
+                </article>
+
+                <article class="glass-card rounded-2xl p-8 scroll-reveal">
+                    <div class="mb-6 relative overflow-hidden rounded-2xl h-48 border border-white/10">
+                        <img src="Conclusiones y aplicación real.png" class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" alt="Conclusiones y aplicación real">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent"></div>
+                        <span class="absolute bottom-4 left-4 text-white font-bold">Conclusiones y aplicación real</span>
+                    </div>
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="text-sm font-bold text-amber-300">Integrante 6</span>
+                        <span class="px-3 py-1 rounded-full bg-amber-500/10 text-amber-300 text-xs">Cierre</span>
+                    </div>
+                    <div class="mb-6 flex items-center gap-4 rounded-2xl border border-amber-400/20 bg-amber-400/10 p-4">
+                        <img src="Roque%20Valentin%20Garcia.png" class="h-16 w-16 rounded-full object-cover border border-amber-300/40" alt="Roque Valentin Garcia">
+                        <div>
+                            <p class="text-xs uppercase tracking-[0.18em] text-amber-300">Nombre y apellido</p>
+                            <p class="text-lg font-bold text-white">Roque Valentin Garcia</p>
+                        </div>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-3">Conclusiones y aplicación real</h3>
+                    <p class="text-slate-400 leading-relaxed mb-5">
+                        Cierra el proyecto respondiendo las preguntas del caso práctico y conectando los aprendizajes con escenarios reales a gran escala.
+                    </p>
+                    <ul class="space-y-2 text-sm text-slate-300">
+                        <li>• Optimización de recursos y costos</li>
+                        <li>• Portabilidad con backups, snapshots y Kubernetes</li>
+                        <li>• Seguridad, balanceo y administración virtual</li>
+                    </ul>
+                    <a href="integrante6.html" class="mt-6 inline-flex w-full items-center justify-center rounded-xl bg-amber-600 px-5 py-3 text-sm font-bold text-white transition-all hover:scale-[1.02] hover:bg-amber-500">Ver página del integrante</a>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <div class="section-video-band">
+        <video class="section-video-bg" autoplay muted loop playsinline preload="auto">
+            <source src="14188177_2160_3840_25fps.mp4" type="video/mp4">
+        </video>
+
+    <!-- Architecture Section -->
+    <section id="arquitectura" class="relative py-24 overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-reveal">
+                <h2 class="text-4xl sm:text-5xl font-bold mb-4">
+                    <span class="gradient-text">Arquitectura Virtual</span>
+                </h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto">
+                    Visualiza cómo funciona la virtualización de servidores
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6 scroll-reveal">
+                <article class="glass-card rounded-2xl overflow-hidden">
+                    <div class="aspect-video bg-slate-950">
+                        <video class="w-full h-full object-cover" src="Hardware%20F%C3%ADsico.mp4" autoplay muted loop playsinline preload="auto"></video>
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-bold uppercase tracking-[0.2em] text-cyan-300">Video 01</span>
+                        <h3 class="text-xl font-bold text-white mt-2">Hardware Físico</h3>
+                        <p class="text-sm text-slate-400 mt-3 leading-relaxed">Representa la capa base: servidores físicos, CPU, memoria, almacenamiento y red disponibles para virtualizar.</p>
+                    </div>
+                </article>
+
+                <article class="glass-card rounded-2xl overflow-hidden">
+                    <div class="aspect-video bg-slate-950">
+                        <img class="w-full h-full object-cover" src="hypervisor.jpg" alt="Hipervisor en la arquitectura virtual">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-bold uppercase tracking-[0.2em] text-teal-300">Imagen central</span>
+                        <h3 class="text-xl font-bold text-white mt-2">Hipervisor</h3>
+                        <p class="text-sm text-slate-400 mt-3 leading-relaxed">Es la capa que administra los recursos físicos y permite crear máquinas virtuales independientes.</p>
+                    </div>
+                </article>
+
+                <article class="glass-card rounded-2xl overflow-hidden">
+                    <div class="aspect-video bg-slate-950">
+                        <video class="w-full h-full object-cover" src="M%C3%A1quinas%20Virtuales.mp4" autoplay muted loop playsinline preload="auto"></video>
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-bold uppercase tracking-[0.2em] text-lime-300">Video 02</span>
+                        <h3 class="text-xl font-bold text-white mt-2">Máquinas Virtuales</h3>
+                        <p class="text-sm text-slate-400 mt-3 leading-relaxed">Muestra la capa final: varios servidores virtuales ejecutándose sobre un mismo host físico.</p>
+                    </div>
+                </article>
+            </div>
+
+            <div class="mt-16 scroll-reveal">
+                <div class="flex flex-wrap items-center justify-center gap-4 mb-8">
+                    <button id="carousel-prev" class="aurora-btn aurora-btn-icon" type="button" aria-label="Anterior">
+                        <span class="btn-label">‹</span>
+                    </button>
+                    <button class="tab-btn aurora-btn aurora-btn-tab active" type="button" data-tab="vmware">
+                        <span class="btn-label">VMware</span>
+                    </button>
+                    <button class="tab-btn aurora-btn aurora-btn-tab" type="button" data-tab="hyperv">
+                        <span class="btn-label">Hyper-V</span>
+                    </button>
+                    <button class="tab-btn aurora-btn aurora-btn-tab" type="button" data-tab="kvm">
+                        <span class="btn-label">KVM</span>
+                    </button>
+                    <button class="tab-btn aurora-btn aurora-btn-tab" type="button" data-tab="xen">
+                        <span class="btn-label">Xen</span>
+                    </button>
+                    <button id="carousel-next" class="aurora-btn aurora-btn-icon" type="button" aria-label="Siguiente">
+                        <span class="btn-label">›</span>
+                    </button>
+                </div>
+
+                <div id="tab-content" class="glass-card rounded-2xl p-8 md:p-12" aria-live="polite">
+                    <div class="grid md:grid-cols-2 gap-8 items-center">
+                        <div>
+                            <h3 class="text-2xl font-bold text-white mb-4">VMware vSphere</h3>
+                            <p class="text-slate-400 mb-6 leading-relaxed">
+                                La plataforma de virtualización empresarial líder en el mercado. Ofrece alta disponibilidad, 
+                                balanceo de carga automatizado y gestión centralizada de recursos.
+                            </p>
+                            <ul class="space-y-3">
+                                <li class="flex items-center gap-3 text-slate-300">
+                                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    vMotion en tiempo real
+                                </li>
+                                <li class="flex items-center gap-3 text-slate-300">
+                                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Alta disponibilidad (HA)
+                                </li>
+                                <li class="flex items-center gap-3 text-slate-300">
+                                    <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                    </svg>
+                                    Distributed Resource Scheduler
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="flex justify-center">
+                            <div class="flex flex-wrap gap-2 justify-center">
+                                <div class="hex"><span class="text-emerald-400 text-xs font-bold">ESXi</span></div>
+                                <div class="hex"><span class="text-teal-400 text-xs font-bold">vCenter</span></div>
+                                <div class="hex"><span class="text-lime-400 text-xs font-bold">vSAN</span></div>
+                                <div class="hex"><span class="text-cyan-400 text-xs font-bold">NSX</span></div>
+                                <div class="hex"><span class="text-blue-400 text-xs font-bold">HA</span></div>
+                                <div class="hex"><span class="text-emerald-400 text-xs font-bold">DRS</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparisons Section -->
+    <section id="comparativas" class="relative py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 scroll-reveal">
+                <p class="text-emerald-300 font-semibold uppercase tracking-[0.2em] text-sm mb-3">Comparativas clave</p>
+                <h2 class="text-4xl sm:text-5xl font-bold mb-4">
+                    <span class="gradient-text">VM, paravirtualización y contenedores</span>
+                </h2>
+                <p class="text-slate-400 text-lg max-w-3xl mx-auto">
+                    Estas tablas ayudan al grupo a explicar cuándo conviene cada modalidad dentro de un entorno de procesamiento de datos e inteligencia artificial.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="glass-card rounded-2xl p-8 scroll-reveal">
+                    <h3 class="text-2xl font-bold text-white mb-6">Virtualización completa vs Paravirtualización</h3>
+                    <div class="overflow-hidden rounded-xl border border-white/10">
+                        <div class="grid grid-cols-2 bg-slate-800/80 text-sm font-bold text-white">
+                            <div class="p-4 border-r border-white/10">Virtualización completa</div>
+                            <div class="p-4">Paravirtualización</div>
+                        </div>
+                        <div class="grid grid-cols-2 text-sm text-slate-300 border-t border-white/10">
+                            <div class="p-4 border-r border-white/10">Mayor compatibilidad</div>
+                            <div class="p-4">Mayor rendimiento</div>
+                        </div>
+                        <div class="grid grid-cols-2 text-sm text-slate-300 border-t border-white/10">
+                            <div class="p-4 border-r border-white/10">Mayor overhead</div>
+                            <div class="p-4">Menor overhead</div>
+                        </div>
+                        <div class="grid grid-cols-2 text-sm text-slate-300 border-t border-white/10">
+                            <div class="p-4 border-r border-white/10">No modifica el sistema operativo</div>
+                            <div class="p-4">Requiere kernel o drivers adaptados</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-8 scroll-reveal">
+                    <h3 class="text-2xl font-bold text-white mb-6">Máquina virtual vs Contenedor</h3>
+                    <div class="overflow-hidden rounded-xl border border-white/10">
+                        <div class="grid grid-cols-2 bg-slate-800/80 text-sm font-bold text-white">
+                            <div class="p-4 border-r border-white/10">VM</div>
+                            <div class="p-4">Contenedor</div>
+                        </div>
+                        <div class="grid grid-cols-2 text-sm text-slate-300 border-t border-white/10">
+                            <div class="p-4 border-r border-white/10">Más pesado</div>
+                            <div class="p-4">Más ligero</div>
+                        </div>
+                        <div class="grid grid-cols-2 text-sm text-slate-300 border-t border-white/10">
+                            <div class="p-4 border-r border-white/10">Incluye sistema operativo completo</div>
+                            <div class="p-4">Comparte kernel con el host</div>
+                        </div>
+                        <div class="grid grid-cols-2 text-sm text-slate-300 border-t border-white/10">
+                            <div class="p-4 border-r border-white/10">Más aislamiento</div>
+                            <div class="p-4">Más rapidez de despliegue</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-6 mt-10">
+                <div class="glass-card rounded-2xl p-6 text-center scroll-reveal">
+                    <p class="text-3xl font-black text-white mb-1">99.9%</p>
+                    <p class="text-sm text-slate-400">Alta disponibilidad como objetivo operativo</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6 text-center scroll-reveal">
+                    <p class="text-3xl font-black text-white mb-1">3</p>
+                    <p class="text-sm text-slate-400">Modalidades principales de virtualización</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6 text-center scroll-reveal">
+                    <p class="text-3xl font-black text-white mb-1">VM</p>
+                    <p class="text-sm text-slate-400">Aislamiento fuerte para sistemas críticos</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6 text-center scroll-reveal">
+                    <p class="text-3xl font-black text-white mb-1">Docker</p>
+                    <p class="text-sm text-slate-400">Despliegue rápido de APIs y microservicios</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    </div>
+
+    <!-- Questions Section -->
+    <section id="preguntas" class="relative py-24 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-emerald-900/20 to-teal-900/20"></div>
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 scroll-reveal">
+            <div class="text-center mb-12">
+                <p class="text-emerald-300 font-semibold uppercase tracking-[0.2em] text-sm mb-3">Cierre del caso práctico</p>
+                <h2 class="text-4xl sm:text-5xl font-bold mb-6">
+                    Conclusiones y <span class="gradient-text">preguntas finales</span>
+                </h2>
+                <p class="text-xl text-slate-400 max-w-3xl mx-auto">
+                    El cierre resume por qué virtualizar, qué aporta cada modalidad y cómo llevar esta arquitectura a un proyecto real.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6 mb-10">
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-2">Optimización</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Mejor uso de CPU, memoria y almacenamiento para cargas de IA y datos.</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-2">Portabilidad</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Snapshots, backups, plantillas y contenedores facilitan mover servicios entre hosts.</p>
+                </div>
+                <div class="glass-card rounded-2xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-2">Escalabilidad</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed">Permite crecer por nuevas VMs, nuevos contenedores o más nodos de infraestructura.</p>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <details class="glass rounded-2xl p-6 group" open>
+                    <summary class="cursor-pointer text-lg font-bold text-white">1. ¿Cuál fue el motivo principal para usar virtualización en ciencia de datos e IA?</summary>
+                    <p class="text-slate-400 mt-4 leading-relaxed">Optimizar recursos físicos, reducir costos, mejorar escalabilidad y ejecutar varias cargas como bases de datos, entrenamiento de modelos y visualización sin depender de hardware dedicado.</p>
+                </details>
+                <details class="glass rounded-2xl p-6 group">
+                    <summary class="cursor-pointer text-lg font-bold text-white">2. ¿Por qué la paravirtualización requiere modificar el sistema operativo invitado?</summary>
+                    <p class="text-slate-400 mt-4 leading-relaxed">Porque el sistema invitado debe cooperar con el hipervisor mediante hypercalls o controladores específicos. Esto reduce overhead, baja latencia y mejora el rendimiento.</p>
+                </details>
+                <details class="glass rounded-2xl p-6 group">
+                    <summary class="cursor-pointer text-lg font-bold text-white">3. ¿Qué limitaciones tienen los contenedores?</summary>
+                    <p class="text-slate-400 mt-4 leading-relaxed">Comparten el kernel del host, por lo que ofrecen menor aislamiento que una VM completa y dependen de la compatibilidad del sistema operativo base.</p>
+                </details>
+                <details class="glass rounded-2xl p-6 group">
+                    <summary class="cursor-pointer text-lg font-bold text-white">4. ¿Cómo garantizar la portabilidad futura?</summary>
+                    <p class="text-slate-400 mt-4 leading-relaxed">Usando backups, snapshots, plantillas de VMs, imágenes Docker, repositorios de configuración y orquestadores como Kubernetes para mover servicios a otros hosts o nubes.</p>
+                </details>
+                <details class="glass rounded-2xl p-6 group">
+                    <summary class="cursor-pointer text-lg font-bold text-white">5. ¿Qué aprendizajes aplican a un proyecto real?</summary>
+                    <p class="text-slate-400 mt-4 leading-relaxed">Administración de entornos virtualizados, asignación correcta de recursos, balanceo de carga, seguridad, monitoreo, alta disponibilidad y documentación de arquitectura.</p>
+                </details>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="relative bg-slate-950 border-t border-white/5 pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-12 mb-12">
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-400 via-teal-500 to-green-900 flex items-center justify-center shadow-lg shadow-emerald-500/25">
+                            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"/>
+                            </svg>
+                        </div>
+                        <span class="text-xl font-bold gradient-text">Virtualiza</span>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        Transformando infraestructuras tradicionales en entornos virtuales de alto rendimiento.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Exposición</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="#equipo" class="hover:text-emerald-400 transition-colors">Integrantes</a></li>
+                        <li><a href="#arquitectura" class="hover:text-emerald-400 transition-colors">Arquitectura virtual</a></li>
+                        <li><a href="#comparativas" class="hover:text-emerald-400 transition-colors">Comparativas</a></li>
+                        <li><a href="#preguntas" class="hover:text-emerald-400 transition-colors">Preguntas finales</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Conceptos</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="#equipo" class="hover:text-emerald-400 transition-colors">Virtualización completa</a></li>
+                        <li><a href="#equipo" class="hover:text-emerald-400 transition-colors">Paravirtualización</a></li>
+                        <li><a href="#equipo" class="hover:text-emerald-400 transition-colors">Contenedores Docker</a></li>
+                        <li><a href="#comparativas" class="hover:text-emerald-400 transition-colors">VM vs contenedor</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-white font-semibold mb-4">Contacto</h4>
+                    <div class="flex gap-4">
+                        <a href="https://github.com/EliasG0nzales" target="_blank" rel="noopener noreferrer" aria-label="GitHub de Elias Gonzales" title="GitHub" class="w-10 h-10 rounded-lg glass flex items-center justify-center text-slate-400 hover:text-white hover:bg-emerald-600 transition-all">
+                            <ion-icon class="text-xl" name="logo-github"></ion-icon>
+                        </a>
+                        <a href="mailto:gonzalesjenhua@gmail.com" aria-label="Enviar correo a gonzalesjenhua@gmail.com" title="Gmail" class="w-10 h-10 rounded-lg glass flex items-center justify-center text-slate-400 hover:text-white hover:bg-emerald-600 transition-all">
+                            <ion-icon class="text-xl" name="mail-outline"></ion-icon>
+                        </a>
+                        <a href="https://myaccount.microsoft.com/?ref=MeControl" target="_blank" rel="noopener noreferrer" aria-label="Blackboard Senati" title="Blackboard Senati" class="w-10 h-10 rounded-lg glass flex items-center justify-center text-slate-400 hover:text-white hover:bg-emerald-600 transition-all">
+                            <ion-icon class="text-xl" name="school-outline"></ion-icon>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/5 pt-8 text-center">
+                <p class="text-slate-500 text-sm">2026 Virtualiza Servidores. Exposición académica sobre ciencia de datos e IA.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+    <script>
+        // ============================================
+        // LOADER
+        // ============================================
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            const shouldSkipLoader = window.location.hash === '#equipo';
+
+            if (shouldSkipLoader) {
+                loader.style.display = 'none';
+                initAnimations();
+                document.getElementById('equipo')?.scrollIntoView({ block: 'start' });
+                return;
+            }
+
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    initAnimations();
+                }, 500);
+            }, 10000);
+        });
+
+        // ============================================
+        // NETWORK CANVAS ANIMATION
+        // ============================================
+        const canvas = document.getElementById('network-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+        const particleCount = 80;
+        const connectionDistance = 150;
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(99, 102, 241, 0.5)';
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < connectionDistance) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(99, 102, 241, ${0.2 * (1 - distance / connectionDistance)})`;
+                        ctx.lineWidth = 1;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        resize();
+        initParticles();
+        animateParticles();
+        window.addEventListener('resize', () => { resize(); initParticles(); });
+
+        // ============================================
+        // MOBILE MENU
+        // ============================================
+        const mobileToggle = document.getElementById('mobile-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const closeMenu = document.getElementById('close-menu');
+
+        mobileToggle.addEventListener('click', () => mobileMenu.classList.add('active'));
+        closeMenu.addEventListener('click', () => mobileMenu.classList.remove('active'));
+
+        // Close menu on link click
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => mobileMenu.classList.remove('active'));
+        });
+
+        // ============================================
+        // TAB SWITCHING
+        // ============================================
+        const tabData = {
+            vmware: {
+                title: 'VMware vSphere',
+                desc: 'La plataforma de virtualización empresarial líder en el mercado. Ofrece alta disponibilidad, balanceo de carga automatizado y gestión centralizada de recursos.',
+                features: ['vMotion en tiempo real', 'Alta disponibilidad (HA)', 'Distributed Resource Scheduler'],
+                hexes: [
+                    { text: 'ESXi', color: 'text-emerald-400' },
+                    { text: 'vCenter', color: 'text-teal-400' },
+                    { text: 'vSAN', color: 'text-lime-400' },
+                    { text: 'NSX', color: 'text-cyan-400' },
+                    { text: 'HA', color: 'text-blue-400' },
+                    { text: 'DRS', color: 'text-emerald-400' }
+                ]
+            },
+            hyperv: {
+                title: 'Microsoft Hyper-V',
+                desc: 'Solución de virtualización nativa de Windows Server. Integración perfecta con el ecosistema Microsoft y herramientas de gestión familiares.',
+                features: ['Live Migration', 'Replica para DR', 'Integración con Azure'],
+                hexes: [
+                    { text: 'Hyper-V', color: 'text-blue-400' },
+                    { text: 'SCVMM', color: 'text-cyan-400' },
+                    { text: 'Replica', color: 'text-emerald-400' },
+                    { text: 'Azure', color: 'text-sky-400' },
+                    { text: 'Failover', color: 'text-teal-400' },
+                    { text: 'VHDX', color: 'text-emerald-400' }
+                ]
+            },
+            kvm: {
+                title: 'KVM (Kernel-based VM)',
+                desc: 'Virtualización de código abierto integrada en el kernel de Linux. Rendimiento nativo con la flexibilidad de la virtualización.',
+                features: ['Paravirtualización', 'Soporte para múltiples SO', 'Gestión con libvirt'],
+                hexes: [
+                    { text: 'KVM', color: 'text-yellow-400' },
+                    { text: 'QEMU', color: 'text-orange-400' },
+                    { text: 'libvirt', color: 'text-red-400' },
+                    { text: 'VirtIO', color: 'text-lime-400' },
+                    { text: 'SPICE', color: 'text-teal-400' },
+                    { text: 'oVirt', color: 'text-emerald-400' }
+                ]
+            },
+            xen: {
+                title: 'Citrix XenServer',
+                desc: 'Plataforma de virtualización empresarial con enfoque en entornos de escritorios virtuales y aplicaciones virtualizadas.',
+                features: ['XenMotion', 'Storage XenMotion', 'Workload Balancing'],
+                hexes: [
+                    { text: 'Xen', color: 'text-orange-400' },
+                    { text: 'XAPI', color: 'text-amber-400' },
+                    { text: 'XenCenter', color: 'text-yellow-400' },
+                    { text: 'PVS', color: 'text-lime-400' },
+                    { text: 'MCS', color: 'text-green-400' },
+                    { text: 'HDX', color: 'text-emerald-400' }
+                ]
+            }
+        };
+
+        const carouselTabs = ['vmware', 'hyperv', 'kvm', 'xen'];
+        let carouselIndex = 0;
+        let carouselTimer;
+
+        function renderCarouselSlide(tab) {
+            const button = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+            // Update buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.add('glass', 'text-slate-300');
+            });
+            if (button) {
+                button.classList.add('active');
+                button.classList.remove('glass', 'text-slate-300');
+            }
+
+            // Update content with animation
+            const content = document.getElementById('tab-content');
+            const data = tabData[tab];
+            
+            gsap.to(content, {
+                opacity: 0,
+                y: 20,
+                duration: 0.3,
+                onComplete: () => {
+                    content.innerHTML = `
+                        <div class="grid md:grid-cols-2 gap-8 items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold text-white mb-4">${data.title}</h3>
+                                <p class="text-slate-400 mb-6 leading-relaxed">${data.desc}</p>
+                                <ul class="space-y-3">
+                                    ${data.features.map(f => `
+                                        <li class="flex items-center gap-3 text-slate-300">
+                                            <svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                            </svg>
+                                            ${f}
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                            <div class="flex justify-center">
+                                <div class="flex flex-wrap gap-2 justify-center">
+                                    ${data.hexes.map(h => `
+                                        <div class="hex"><span class="${h.color} text-xs font-bold">${h.text}</span></div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    gsap.to(content, {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.3
+                    });
+                }
+            });
+        }
+
+        function goToCarouselSlide(index, shouldRestart = true) {
+            carouselIndex = (index + carouselTabs.length) % carouselTabs.length;
+            renderCarouselSlide(carouselTabs[carouselIndex]);
+            if (shouldRestart) restartCarousel();
+        }
+
+        function nextCarouselSlide() {
+            goToCarouselSlide(carouselIndex + 1, false);
+        }
+
+        function restartCarousel() {
+            clearInterval(carouselTimer);
+            carouselTimer = setInterval(nextCarouselSlide, 5500);
+        }
+
+        document.querySelectorAll('.tab-btn').forEach((button, index) => {
+            button.addEventListener('click', () => goToCarouselSlide(index));
+        });
+
+        document.getElementById('carousel-prev').addEventListener('click', () => goToCarouselSlide(carouselIndex - 1));
+        document.getElementById('carousel-next').addEventListener('click', () => goToCarouselSlide(carouselIndex + 1));
+        restartCarousel();
+
+        // ============================================
+        // GSAP ANIMATIONS
+        // ============================================
+        function initAnimations() {
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Scroll reveal animations
+            gsap.utils.toArray('.scroll-reveal').forEach((element) => {
+                gsap.fromTo(element, 
+                    {
+                        opacity: 0,
+                        y: 50
+                    },
+                    {
+                        opacity: 1,
+                        y: 0,
+                        duration: 0.8,
+                        ease: "power3.out",
+                        scrollTrigger: {
+                            trigger: element,
+                            start: "top 85%",
+                            toggleActions: "play none none reverse"
+                        }
+                    }
+                );
+            });
+
+            // Hero text animation
+            gsap.from("#hero-text", {
+                opacity: 0,
+                scale: 0.8,
+                duration: 1,
+                delay: 0.5,
+                ease: "back.out(1.7)"
+            });
+
+            // Stats counter animation
+            const statNumbers = document.querySelectorAll('.stat-number');
+            const progressCircles = document.querySelectorAll('.progress-ring-circle');
+
+            statNumbers.forEach((stat, index) => {
+                const target = parseFloat(stat.dataset.target);
+                const circle = progressCircles[index];
+                const percent = parseFloat(circle.dataset.percent);
+                const circumference = 2 * Math.PI * 52;
+                const offset = circumference - (percent / 100) * circumference;
+
+                ScrollTrigger.create({
+                    trigger: stat,
+                    start: "top 80%",
+                    onEnter: () => {
+                        // Animate number
+                        gsap.to(stat, {
+                            innerHTML: target,
+                            duration: 2,
+                            snap: { innerHTML: target % 1 === 0 ? 1 : 0.1 },
+                            ease: "power2.out"
+                        });
+
+                        // Animate circle
+                        gsap.to(circle, {
+                            strokeDashoffset: offset,
+                            duration: 2,
+                            ease: "power2.out"
+                        });
+                    },
+                    once: true
+                });
+            });
+
+            // Parallax effect for floating elements
+            gsap.to(".float", {
+                y: -30,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: "#inicio",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: 1
+                }
+            });
+        }
+
+        // ============================================
+        // SMOOTH SCROLL
+        // ============================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (!href || href === '#') return;
+                e.preventDefault();
+                const target = document.querySelector(href);
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // ============================================
+        // NAVBAR SCROLL EFFECT
+        // ============================================
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const nav = document.querySelector('nav');
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                nav.classList.add('shadow-lg', 'shadow-emerald-500/10');
+            } else {
+                nav.classList.remove('shadow-lg', 'shadow-emerald-500/10');
+            }
+            
+            lastScroll = currentScroll;
+        });
+
+        // ============================================
+        // 3D TILT EFFECT FOR CARDS
+        // ============================================
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 20;
+                const rotateY = (centerX - x) / 20;
+                
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+            });
+        });
+
+        // ============================================
+        // TYPING EFFECT FOR HERO
+        // ============================================
+        const words = ['Servidores', 'Infraestructura', 'Aplicaciones', 'Datos'];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const heroText = document.getElementById('hero-text');
+
+        function typeEffect() {
+            const currentWord = words[wordIndex];
+            
+            if (isDeleting) {
+                heroText.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                heroText.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            let typeSpeed = isDeleting ? 50 : 100;
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                typeSpeed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                typeSpeed = 500;
+            }
+
+            setTimeout(typeEffect, typeSpeed);
+        }
+
+        // Start typing effect after loader
+        setTimeout(typeEffect, 2000);
+
+        // ============================================
+        // INTERACTIVE PARTICLES ON MOUSE MOVE
+        // ============================================
+        document.addEventListener('mousemove', (e) => {
+            const mouseX = e.clientX;
+            const mouseY = e.clientY;
+            
+            particles.forEach(p => {
+                const dx = mouseX - p.x;
+                const dy = mouseY - p.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 200) {
+                    const force = (200 - distance) / 200;
+                    p.vx -= (dx / distance) * force * 0.5;
+                    p.vy -= (dy / distance) * force * 0.5;
+                }
+            });
+        });
+
+        // ============================================
+        // FORM INTERACTIONS
+        // ============================================
+        const formInputs = document.querySelectorAll('input, textarea');
+        formInputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                gsap.to(input, {
+                    scale: 1.02,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            });
+            
+            input.addEventListener('blur', () => {
+                gsap.to(input, {
+                    scale: 1,
+                    duration: 0.3,
+                    ease: "power2.out"
+                });
+            });
+        });
+
+        // ============================================
+        // BUTTON RIPPLE EFFECT
+        // ============================================
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255,255,255,0.3);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Add ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ============================================
+        // HEXAGON INTERACTION
+        // ============================================
+        document.querySelectorAll('.hex').forEach(hex => {
+            hex.addEventListener('mouseenter', () => {
+                gsap.to(hex, {
+                    scale: 1.2,
+                    duration: 0.3,
+                    ease: "back.out(1.7)"
+                });
+            });
+            
+            hex.addEventListener('mouseleave', () => {
+                gsap.to(hex, {
+                    scale: 1,
+                    duration: 0.3
+                });
+            });
+        });
+
+        // ============================================
+        // GLITCH EFFECT ON HERO TEXT
+        // ============================================
+        function glitchEffect() {
+            const text = document.getElementById('hero-text');
+            const originalText = text.textContent;
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+            
+            let iterations = 0;
+            const interval = setInterval(() => {
+                text.textContent = originalText
+                    .split('')
+                    .map((char, index) => {
+                        if (index < iterations) return originalText[index];
+                        return chars[Math.floor(Math.random() * chars.length)];
+                    })
+                    .join('');
+                
+                if (iterations >= originalText.length) clearInterval(interval);
+                iterations += 1/3;
+            }, 30);
+        }
+
+        // Trigger glitch occasionally
+        setInterval(glitchEffect, 8000);
+
+        console.log('🚀 Virtualiza Servidores - Sistema iniciado correctamente');
+    </script>
+</body>
+</html>
+

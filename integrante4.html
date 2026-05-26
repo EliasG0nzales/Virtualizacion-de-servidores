@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Integrante 4 - Paravirtualización</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, sans-serif; background: #070b14; color: #e5edf8; }
+    .grid-bg { background-image: linear-gradient(rgba(192,132,252,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(192,132,252,.08) 1px, transparent 1px); background-size: 72px 72px; }
+    .gradient-text { background: linear-gradient(135deg, #c084fc, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .rule { border-top: 1px solid rgba(148, 163, 184, .18); }
+  </style>
+</head>
+<body>
+  <nav class="sticky top-0 z-30 border-b border-white/10 bg-slate-950/85 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between">
+      <a href="index.html#equipo" class="text-sm font-bold text-purple-300 hover:text-white">← Volver al equipo</a>
+      <span class="text-sm text-slate-400">Integrante 4 · Operación 02</span>
+    </div>
+  </nav>
+
+  <header class="relative overflow-hidden grid-bg">
+    <div class="absolute inset-0 bg-gradient-to-b from-purple-950/45 via-slate-950/40 to-slate-950"></div>
+    <div class="relative max-w-7xl mx-auto px-6 py-24">
+      <p class="text-purple-300 font-bold uppercase tracking-[0.24em] text-sm">Operación 02</p>
+      <h1 class="text-5xl md:text-7xl font-black mt-4"><span class="gradient-text">Paravirtualización</span> y rendimiento</h1>
+      <p class="text-xl text-slate-300 mt-6 max-w-3xl leading-relaxed">Hypercalls, kernel modificado y cooperación Host-Guest para reducir overhead y mejorar rendimiento.</p>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-16 space-y-16">
+    <section class="grid lg:grid-cols-[360px_1fr] gap-14 items-center">
+      <div class="rounded-2xl overflow-hidden min-h-[560px]">
+        <img src="Luis%20Adrian%20Cervera%20Pardo.png" class="h-[560px] w-full object-cover" alt="Luis Adrian Cervera Pardo">
+      </div>
+      <div>
+        <span class="text-purple-300 text-sm font-bold uppercase tracking-[0.2em]">Integrante 4 · Operación 02</span>
+        <h2 class="text-4xl font-black mt-4 mb-6">Luis Adrian Cervera Pardo</h2>
+        <div class="space-y-4 text-slate-300 text-lg leading-relaxed">
+          <p><b class="text-white">Rol:</b> expositor de paravirtualización y rendimiento.</p>
+          <p><b class="text-white">Tema asignado:</b> hypercalls, kernel modificado, drivers específicos y cooperación Host-Guest.</p>
+          <p><b class="text-white">Descripción:</b> explica cómo el sistema operativo invitado coopera con el hipervisor para reducir overhead y mejorar eficiencia.</p>
+          <p><b class="text-white">Debe destacar:</b> menor latencia, mayor rendimiento, comparación con virtualización completa y medición CPU/RAM.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid lg:grid-cols-2 gap-12">
+      <div>
+        <h2 class="text-4xl font-black mb-6">Qué es paravirtualización</h2>
+        <p class="text-slate-300 text-lg leading-relaxed">Es una modalidad donde el sistema operativo invitado sabe que está virtualizado y coopera directamente con el hipervisor. Esa cooperación reduce parte del costo de simular hardware completo.</p>
+      </div>
+      <div>
+        <h2 class="text-4xl font-black mb-6">Pasos del PDF</h2>
+        <ol class="space-y-3 text-slate-300 text-lg list-decimal list-inside">
+          <li>Seleccionar un sistema operativo invitado compatible.</li>
+          <li>Activar paravirtualización en el hipervisor.</li>
+          <li>Configurar hypercalls o controladores específicos.</li>
+          <li>Crear instancias de prueba para cargas intensivas.</li>
+          <li>Comparar latencia, CPU, memoria y rendimiento.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Comparación</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="border-b border-white/20 text-slate-200">
+            <tr><th class="py-4 pr-6">Virtualización completa</th><th class="py-4">Paravirtualización</th></tr>
+          </thead>
+          <tbody class="text-slate-300">
+            <tr class="border-b border-white/10"><td class="py-4 pr-6">Más compatibilidad</td><td class="py-4">Más rendimiento</td></tr>
+            <tr class="border-b border-white/10"><td class="py-4 pr-6">Mayor overhead</td><td class="py-4">Menor overhead</td></tr>
+            <tr><td class="py-4 pr-6">No modifica el sistema operativo</td><td class="py-4">Requiere sistema invitado adaptado</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Uso CPU/RAM y benchmark conceptual</h2>
+      <div class="space-y-7 max-w-4xl">
+        <div><div class="flex justify-between mb-2"><span>Virtualización completa · overhead</span><span class="text-slate-400">78%</span></div><div class="h-3 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-cyan-500 rounded-full" style="width:78%"></div></div></div>
+        <div><div class="flex justify-between mb-2"><span>Paravirtualización · overhead</span><span class="text-slate-400">42%</span></div><div class="h-3 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-purple-500 rounded-full" style="width:42%"></div></div></div>
+        <div><div class="flex justify-between mb-2"><span>Mejora esperada en cargas intensivas</span><span class="text-slate-400">+28%</span></div><div class="h-3 bg-slate-800 rounded-full overflow-hidden"><div class="h-full bg-emerald-500 rounded-full" style="width:68%"></div></div></div>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Evidencias</h2>
+      <div class="grid md:grid-cols-4 gap-5">
+        <img src="integrante%204.0.jpeg" class="rounded-xl h-52 w-full object-cover" alt="Evidencia paravirtualización">
+        <img src="integrante%204.1.jpeg" class="rounded-xl h-52 w-full object-cover" alt="Hypercalls">
+        <img src="integrante%204.2.jpeg" class="rounded-xl h-52 w-full object-cover" alt="Kernel modificado">
+        <img src="integrante%204.3.jpeg" class="rounded-xl h-52 w-full object-cover" alt="Benchmark">
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-6">Guion para exponer</h2>
+      <p class="text-slate-300 text-xl leading-relaxed max-w-5xl">“La paravirtualización mejora el rendimiento porque el sistema operativo invitado conoce que está virtualizado y coopera con el hipervisor. Mediante hypercalls o controladores específicos, se reduce overhead, latencia y uso innecesario de CPU.”</p>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Flujo Host-Guest con hypercalls</h2>
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <svg viewBox="0 0 640 360" class="w-full" role="img" aria-label="Flujo de hypercalls">
+          <defs>
+            <marker id="arrow-purple" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L9,3 z" fill="#c084fc"/>
+            </marker>
+          </defs>
+          <text x="20" y="30" fill="#e5edf8" font-size="20" font-weight="800">Cooperación directa</text>
+          <rect x="35" y="88" width="190" height="120" rx="14" fill="#111827" stroke="#c084fc"/>
+          <text x="68" y="140" fill="#c084fc" font-size="18" font-weight="800">SO invitado</text>
+          <text x="70" y="170" fill="#94a3b8" font-size="13">Kernel adaptado</text>
+          <rect x="410" y="88" width="190" height="120" rx="14" fill="#111827" stroke="#22d3ee"/>
+          <text x="455" y="140" fill="#22d3ee" font-size="18" font-weight="800">Hipervisor</text>
+          <text x="442" y="170" fill="#94a3b8" font-size="13">Control de recursos</text>
+          <line x1="225" y1="148" x2="410" y2="148" stroke="#c084fc" stroke-width="3" marker-end="url(#arrow-purple)">
+            <animate attributeName="stroke-dasharray" values="0 240;120 120;240 0" dur="2s" repeatCount="indefinite"/>
+          </line>
+          <text x="275" y="128" fill="#e5edf8" font-size="15">hypercalls</text>
+          <rect x="220" y="260" width="205" height="48" rx="24" fill="#172033"/>
+          <text x="250" y="290" fill="#34d399" font-size="16" font-weight="800">Menor overhead</text>
+        </svg>
+        <div class="space-y-5 text-slate-300 text-lg leading-relaxed">
+          <p><b class="text-purple-300">Hypercalls:</b> llamadas directas desde el invitado hacia el hipervisor.</p>
+          <p><b class="text-cyan-300">Drivers específicos:</b> optimizan red, disco y memoria.</p>
+          <p><b class="text-emerald-300">Resultado:</b> menor latencia y mejor eficiencia para cargas intensivas.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Características principales</h2>
+      <div class="grid md:grid-cols-2 gap-x-16 gap-y-5 text-slate-300 text-lg">
+        <p><b class="text-purple-300">Conocimiento del entorno:</b> el invitado sabe que está virtualizado.</p>
+        <p><b class="text-purple-300">Menor emulación:</b> evita simular todo el hardware.</p>
+        <p><b class="text-purple-300">Mayor rendimiento:</b> útil para procesamiento intensivo.</p>
+        <p><b class="text-purple-300">Menor compatibilidad:</b> no todos los sistemas invitados aplican.</p>
+        <p><b class="text-purple-300">Medición necesaria:</b> se comparan CPU, RAM y latencia.</p>
+        <p><b class="text-purple-300">Uso recomendado:</b> servicios controlados donde se pueda adaptar el SO.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

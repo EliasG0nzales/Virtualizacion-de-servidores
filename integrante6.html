@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Integrante 6 - Conclusiones y Preguntas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: Inter, sans-serif; background: #070b14; color: #e5edf8; }
+    .grid-bg { background-image: linear-gradient(rgba(251,191,36,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(251,191,36,.08) 1px, transparent 1px); background-size: 72px 72px; }
+    .gradient-text { background: linear-gradient(135deg, #fbbf24, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .rule { border-top: 1px solid rgba(148, 163, 184, .18); }
+  </style>
+</head>
+<body>
+  <nav class="sticky top-0 z-30 border-b border-white/10 bg-slate-950/85 backdrop-blur-xl">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between">
+      <a href="index.html#equipo" class="text-sm font-bold text-amber-300 hover:text-white">← Volver al equipo</a>
+      <span class="text-sm text-slate-400">Integrante 6 · Cierre</span>
+    </div>
+  </nav>
+
+  <header class="relative overflow-hidden grid-bg">
+    <div class="absolute inset-0 bg-gradient-to-b from-amber-950/45 via-slate-950/40 to-slate-950"></div>
+    <div class="relative max-w-7xl mx-auto px-6 py-24">
+      <p class="text-amber-300 font-bold uppercase tracking-[0.24em] text-sm">Conclusiones y aplicación real</p>
+      <h1 class="text-5xl md:text-7xl font-black mt-4">Preguntas finales y <span class="gradient-text">cierre</span></h1>
+      <p class="text-xl text-slate-300 mt-6 max-w-3xl leading-relaxed">Responde las preguntas del documento y conecta el aprendizaje con una implementación real de infraestructura virtualizada.</p>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-6 py-16 space-y-16">
+    <section class="grid lg:grid-cols-[360px_1fr] gap-14 items-center">
+      <div class="rounded-2xl overflow-hidden min-h-[560px]">
+        <img src="Roque%20Valentin%20Garcia.png" class="h-[560px] w-full object-cover" alt="Roque Valentin Garcia">
+      </div>
+      <div>
+        <span class="text-amber-300 text-sm font-bold uppercase tracking-[0.2em]">Integrante 6 · Cierre del caso</span>
+        <h2 class="text-4xl font-black mt-4 mb-6">Roque Valentin Garcia</h2>
+        <div class="space-y-4 text-slate-300 text-lg leading-relaxed">
+          <p><b class="text-white">Rol:</b> expositor de conclusiones, preguntas finales y aplicación real.</p>
+          <p><b class="text-white">Tema asignado:</b> responder las cinco preguntas del documento y cerrar la exposición del grupo.</p>
+          <p><b class="text-white">Descripción:</b> conecta los aprendizajes con escenarios reales: optimización, portabilidad, seguridad, balanceo y escalabilidad.</p>
+          <p><b class="text-white">Debe destacar:</b> cuándo usar VMs, cuándo usar paravirtualización y cuándo usar contenedores.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="grid md:grid-cols-3 gap-12">
+      <p class="text-slate-300 text-lg"><b class="text-amber-300 block mb-2">Optimización</b>Mejor uso de CPU, RAM, red y almacenamiento.</p>
+      <p class="text-slate-300 text-lg"><b class="text-purple-300 block mb-2">Portabilidad</b>Backups, snapshots, imágenes Docker y Kubernetes.</p>
+      <p class="text-slate-300 text-lg"><b class="text-emerald-300 block mb-2">Escalabilidad</b>Crecimiento mediante VMs, contenedores y nuevos hosts.</p>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Respuestas finales del documento</h2>
+      <div class="space-y-6 text-slate-300 text-lg leading-relaxed">
+        <p><b class="text-amber-300">1. ¿Por qué usar virtualización?</b><br>Para optimizar recursos físicos, reducir costos, mejorar flexibilidad y ejecutar varias cargas de datos e IA sin depender de hardware dedicado.</p>
+        <p><b class="text-amber-300">2. Beneficios de la paravirtualización.</b><br>Menor latencia, mayor rendimiento y reducción de overhead mediante cooperación entre el invitado y el hipervisor.</p>
+        <p><b class="text-amber-300">3. Limitaciones de los contenedores.</b><br>Menor aislamiento que una VM completa y dependencia del mismo kernel del sistema operativo host.</p>
+        <p><b class="text-amber-300">4. Portabilidad futura.</b><br>Uso de backups, snapshots, plantillas, imágenes Docker, documentación y Kubernetes.</p>
+        <p><b class="text-amber-300">5. Aprendizajes obtenidos.</b><br>Administración virtual, balanceo de carga, seguridad, monitoreo, escalabilidad y documentación técnica.</p>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Timeline del proyecto</h2>
+      <div class="grid md:grid-cols-5 gap-8 text-slate-300">
+        <p><b class="text-amber-300">01 Diagnóstico</b><br>Requisitos de datos e IA.</p>
+        <p><b class="text-amber-300">02 VMs</b><br>Virtualización completa.</p>
+        <p><b class="text-amber-300">03 Rendimiento</b><br>Paravirtualización.</p>
+        <p><b class="text-amber-300">04 Docker</b><br>Microservicios.</p>
+        <p><b class="text-amber-300">05 Cierre</b><br>Conclusiones.</p>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Diagrama final de infraestructura</h2>
+      <div class="grid md:grid-cols-4 gap-8 text-slate-300 text-lg">
+        <p><b class="text-white">Hardware:</b><br>CPU, RAM, red y almacenamiento.</p>
+        <p><b class="text-indigo-300">Hipervisor:</b><br>ESXi, XenServer o KVM.</p>
+        <p><b class="text-cyan-300">VMs:</b><br>datos, web, IA y monitoreo.</p>
+        <p><b class="text-emerald-300">Contenedores:</b><br>APIs, microservicios y agentes.</p>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-6">Guion para exponer</h2>
+      <p class="text-slate-300 text-xl leading-relaxed max-w-5xl">“Como cierre, la virtualización permite modernizar una infraestructura física y adaptarla a necesidades reales de datos e IA. No existe una sola modalidad ideal para todo: las VMs sirven para aislamiento, la paravirtualización para rendimiento y los contenedores para rapidez.”</p>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Mapa final de decisión</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead class="text-slate-200 border-b border-white/20">
+            <tr><th class="py-4 pr-6">Necesidad</th><th class="py-4 pr-6">Modalidad recomendada</th><th class="py-4">Motivo</th></tr>
+          </thead>
+          <tbody class="text-slate-300">
+            <tr class="border-b border-white/10"><td class="py-4 pr-6">Sistema legado o crítico</td><td class="py-4 pr-6 text-cyan-300 font-bold">Virtualización completa</td><td class="py-4">Mayor compatibilidad y aislamiento.</td></tr>
+            <tr class="border-b border-white/10"><td class="py-4 pr-6">Carga intensiva controlada</td><td class="py-4 pr-6 text-purple-300 font-bold">Paravirtualización</td><td class="py-4">Mejor rendimiento y menor overhead.</td></tr>
+            <tr><td class="py-4 pr-6">API, web o microservicio</td><td class="py-4 pr-6 text-pink-300 font-bold">Contenedores</td><td class="py-4">Despliegue rápido y menor consumo.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="rule pt-14">
+      <h2 class="text-4xl font-black mb-8">Gráfico de conclusión</h2>
+      <svg viewBox="0 0 820 360" class="w-full" role="img" aria-label="Gráfico de modalidades de virtualización">
+        <text x="20" y="35" fill="#e5edf8" font-size="22" font-weight="800">Selección por necesidad</text>
+        <circle cx="190" cy="185" r="95" fill="none" stroke="#22d3ee" stroke-width="24" opacity=".9"/>
+        <text x="125" y="180" fill="#22d3ee" font-size="17" font-weight="800">Aislamiento</text>
+        <text x="145" y="205" fill="#e5edf8" font-size="15">VM completa</text>
+        <circle cx="410" cy="185" r="95" fill="none" stroke="#c084fc" stroke-width="24" opacity=".9"/>
+        <text x="350" y="180" fill="#c084fc" font-size="17" font-weight="800">Rendimiento</text>
+        <text x="340" y="205" fill="#e5edf8" font-size="15">Paravirtualización</text>
+        <circle cx="630" cy="185" r="95" fill="none" stroke="#ec4899" stroke-width="24" opacity=".9"/>
+        <text x="585" y="180" fill="#ec4899" font-size="17" font-weight="800">Rapidez</text>
+        <text x="585" y="205" fill="#e5edf8" font-size="15">Contenedores</text>
+        <path d="M270 185 C315 140, 350 140, 330 185" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="8 8"/>
+        <path d="M490 185 C535 140, 570 140, 550 185" fill="none" stroke="#64748b" stroke-width="2" stroke-dasharray="8 8"/>
+      </svg>
+    </section>
+  </main>
+</body>
+</html>
