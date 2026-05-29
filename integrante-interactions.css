@@ -1,0 +1,171 @@
+.letter-animate {
+  white-space: normal;
+}
+
+span.letter-animate {
+  display: inline-block;
+}
+
+.letter-animate .letter,
+.letter-animate .letter-space {
+  display: inline-block;
+}
+
+.letter-animate .letter {
+  transform-origin: 50% 50%;
+  animation-duration: 3.8s;
+  animation-iteration-count: infinite;
+  animation-fill-mode: both;
+  animation-delay: calc(var(--i) * 0.045s);
+  will-change: transform, opacity;
+}
+
+.letter-animate .letter-space {
+  width: 0.34em;
+}
+
+.gradient-text .letter {
+  background: inherit;
+  background-size: inherit;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.letter-lightspeed .letter { animation-name: letterLightSpeedInLeft; }
+.letter-rotate .letter { animation-name: letterRotateIn; }
+.letter-roll .letter { animation-name: letterRollIn; }
+.letter-jack .letter { animation-name: letterJackInTheBox; }
+.letter-bounce .letter { animation-name: letterBounceIn; }
+.letter-slide .letter { animation-name: letterSlideInUp; }
+
+@keyframes letterLightSpeedInLeft {
+  0%, 16% { opacity: 0; transform: translateX(-120%) skewX(28deg); }
+  24% { opacity: 1; transform: translateX(10%) skewX(-14deg); }
+  31% { transform: translateX(0) skewX(0deg); }
+  72%, 100% { opacity: 1; transform: translateX(0) skewX(0deg); }
+}
+
+@keyframes letterRotateIn {
+  0%, 14% { opacity: 0; transform: rotate(-210deg) scale(0.5); }
+  28% { opacity: 1; transform: rotate(10deg) scale(1.08); }
+  36%, 100% { opacity: 1; transform: rotate(0) scale(1); }
+}
+
+@keyframes letterRollIn {
+  0%, 14% { opacity: 0; transform: translateX(-90%) rotate(-160deg); }
+  30% { opacity: 1; transform: translateX(8%) rotate(12deg); }
+  40%, 100% { opacity: 1; transform: translateX(0) rotate(0deg); }
+}
+
+@keyframes letterJackInTheBox {
+  0%, 14% { opacity: 0; transform: scale(0.12) rotate(30deg); transform-origin: center bottom; }
+  24% { opacity: 1; transform: scale(1.1) rotate(-10deg); }
+  32% { transform: scale(0.95) rotate(3deg); }
+  42%, 100% { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+@keyframes letterBounceIn {
+  0%, 14% { opacity: 0; transform: scale(0.35); }
+  24% { opacity: 1; transform: scale(1.22); }
+  32% { transform: scale(0.9); }
+  42% { transform: scale(1.05); }
+  52%, 100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes letterSlideInUp {
+  0%, 16% { opacity: 0; transform: translateY(120%); }
+  30% { opacity: 1; transform: translateY(-8%); }
+  40%, 100% { opacity: 1; transform: translateY(0); }
+}
+
+.previewable-image {
+  cursor: zoom-in;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+}
+
+.previewable-image:hover,
+.previewable-image:focus-visible {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 18px 45px rgba(34, 211, 238, 0.18);
+  filter: saturate(1.08) brightness(1.05);
+  outline: none;
+}
+
+.previewable-image.selected {
+  box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.55), 0 22px 55px rgba(34, 211, 238, 0.2);
+}
+
+.image-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(2, 6, 23, 0.86);
+  backdrop-filter: blur(14px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+}
+
+.image-lightbox.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.image-lightbox-panel {
+  width: min(100%, 1080px);
+}
+
+.image-lightbox-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: #020617;
+  box-shadow: 0 28px 90px rgba(0, 0, 0, 0.5);
+}
+
+.image-lightbox img {
+  display: block;
+  width: 100%;
+  max-height: 78vh;
+  object-fit: contain;
+}
+
+.image-lightbox-caption {
+  margin-top: 0.9rem;
+  color: #cbd5e1;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.image-lightbox-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(15, 23, 42, 0.78);
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+body.lightbox-lock {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letter-animate .letter,
+  .previewable-image,
+  .image-lightbox {
+    animation: none;
+    transition: none;
+  }
+}

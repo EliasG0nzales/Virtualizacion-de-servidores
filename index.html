@@ -90,6 +90,89 @@
             50% { background-position: 100% 50%; }
         }
 
+        .letter-animate {
+            white-space: normal;
+        }
+
+        span.letter-animate {
+            display: inline-block;
+        }
+
+        .letter-animate .letter,
+        .letter-animate .letter-space {
+            display: inline-block;
+        }
+
+        .letter-animate .letter {
+            transform-origin: 50% 50%;
+            animation-duration: 3.8s;
+            animation-iteration-count: infinite;
+            animation-fill-mode: both;
+            animation-delay: calc(var(--i) * 0.045s);
+            will-change: transform, opacity;
+        }
+
+        .letter-animate .letter-space { width: 0.34em; }
+
+        .gradient-text.letter-animate .letter {
+            background: inherit;
+            background-size: inherit;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .letter-lightspeed .letter { animation-name: letterLightSpeedInLeft; }
+        .letter-rotate .letter { animation-name: letterRotateIn; }
+        .letter-roll .letter { animation-name: letterRollIn; }
+        .letter-jack .letter { animation-name: letterJackInTheBox; }
+        .letter-bounce .letter { animation-name: letterBounceIn; }
+        .letter-slide .letter { animation-name: letterSlideInUp; }
+
+        @keyframes letterLightSpeedInLeft {
+            0%, 16% { opacity: 0; transform: translateX(-120%) skewX(28deg); }
+            24% { opacity: 1; transform: translateX(10%) skewX(-14deg); }
+            31% { transform: translateX(0) skewX(0deg); }
+            72%, 100% { opacity: 1; transform: translateX(0) skewX(0deg); }
+        }
+
+        @keyframes letterRotateIn {
+            0%, 14% { opacity: 0; transform: rotate(-210deg) scale(0.5); }
+            28% { opacity: 1; transform: rotate(10deg) scale(1.08); }
+            36%, 100% { opacity: 1; transform: rotate(0) scale(1); }
+        }
+
+        @keyframes letterRollIn {
+            0%, 14% { opacity: 0; transform: translateX(-90%) rotate(-160deg); }
+            30% { opacity: 1; transform: translateX(8%) rotate(12deg); }
+            40%, 100% { opacity: 1; transform: translateX(0) rotate(0deg); }
+        }
+
+        @keyframes letterJackInTheBox {
+            0%, 14% { opacity: 0; transform: scale(0.12) rotate(30deg); transform-origin: center bottom; }
+            24% { opacity: 1; transform: scale(1.1) rotate(-10deg); }
+            32% { transform: scale(0.95) rotate(3deg); }
+            42%, 100% { opacity: 1; transform: scale(1) rotate(0); }
+        }
+
+        @keyframes letterBounceIn {
+            0%, 14% { opacity: 0; transform: scale(0.35); }
+            24% { opacity: 1; transform: scale(1.22); }
+            32% { transform: scale(0.9); }
+            42% { transform: scale(1.05); }
+            52%, 100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes letterSlideInUp {
+            0%, 16% { opacity: 0; transform: translateY(120%); }
+            30% { opacity: 1; transform: translateY(-8%); }
+            40%, 100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .letter-animate .letter { animation: none; opacity: 1; transform: none; }
+        }
+
         .aurora-btn {
             --rad: 999px;
             --color-layer-a: #34d399;
@@ -486,7 +569,7 @@
                 </div>
                 
                 <h1 class="text-5xl sm:text-6xl lg:text-7xl font-black leading-tight mb-6">
-                    <span class="block text-white">Virtualiza tus</span>
+                    <span class="block text-white letter-animate letter-lightspeed" data-letter-animation>Virtualiza tus</span>
                     <span class="gradient-text" id="hero-text">Servidores</span>
                 </h1>
                 
@@ -543,7 +626,7 @@
             <div class="text-center mb-16 scroll-reveal">
                 <p class="text-emerald-300 font-semibold uppercase tracking-[0.2em] text-sm mb-3">Grupo de 6 personas</p>
                 <h2 class="text-4xl sm:text-5xl font-bold mb-4">
-                    <span class="gradient-text">Distribución de la exposición</span>
+                    <span class="gradient-text letter-animate letter-rotate" data-letter-animation>Distribución de la exposición</span>
                 </h2>
                 <p class="text-slate-400 text-lg max-w-3xl mx-auto">
                     Cada integrante desarrolla una parte del caso práctico: desde el contexto del proyecto hasta la aplicación real en entornos de ciencia de datos e IA.
@@ -568,7 +651,7 @@
                             <p class="text-lg font-bold text-white">Elias Gonzales Jenhua</p>
                         </div>
                     </div>
-                    <h3 class="text-2xl font-bold text-white mb-3">Introducción y objetivos</h3>
+                    <h3 class="text-2xl font-bold text-white mb-3 letter-animate letter-slide" data-letter-animation>Introducción y objetivos</h3>
                     <p class="text-slate-400 leading-relaxed mb-5">
                         Explica qué es la virtualización, por qué es importante en empresas de IA y ciencia de datos, y qué problema resuelve frente a servidores físicos tradicionales.
                     </p>
@@ -764,7 +847,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16 scroll-reveal">
                 <h2 class="text-4xl sm:text-5xl font-bold mb-4">
-                    <span class="gradient-text">Arquitectura Virtual</span>
+                    <span class="gradient-text letter-animate letter-roll" data-letter-animation>Arquitectura Virtual</span>
                 </h2>
                 <p class="text-slate-400 text-lg max-w-2xl mx-auto">
                     Visualiza cómo funciona la virtualización de servidores
@@ -778,7 +861,7 @@
                     </div>
                     <div class="p-6">
                         <span class="text-xs font-bold uppercase tracking-[0.2em] text-cyan-300">Video 01</span>
-                        <h3 class="text-xl font-bold text-white mt-2">Hardware Físico</h3>
+                        <h3 class="text-xl font-bold text-white mt-2 letter-animate letter-jack" data-letter-animation>Hardware Físico</h3>
                         <p class="text-sm text-slate-400 mt-3 leading-relaxed">Representa la capa base: servidores físicos, CPU, memoria, almacenamiento y red disponibles para virtualizar.</p>
                     </div>
                 </article>
@@ -789,7 +872,7 @@
                     </div>
                     <div class="p-6">
                         <span class="text-xs font-bold uppercase tracking-[0.2em] text-teal-300">Imagen central</span>
-                        <h3 class="text-xl font-bold text-white mt-2">Hipervisor</h3>
+                        <h3 class="text-xl font-bold text-white mt-2 letter-animate letter-bounce" data-letter-animation>Hipervisor</h3>
                         <p class="text-sm text-slate-400 mt-3 leading-relaxed">Es la capa que administra los recursos físicos y permite crear máquinas virtuales independientes.</p>
                     </div>
                 </article>
@@ -800,7 +883,7 @@
                     </div>
                     <div class="p-6">
                         <span class="text-xs font-bold uppercase tracking-[0.2em] text-lime-300">Video 02</span>
-                        <h3 class="text-xl font-bold text-white mt-2">Máquinas Virtuales</h3>
+                        <h3 class="text-xl font-bold text-white mt-2 letter-animate letter-slide" data-letter-animation>Máquinas Virtuales</h3>
                         <p class="text-sm text-slate-400 mt-3 leading-relaxed">Muestra la capa final: varios servidores virtuales ejecutándose sobre un mismo host físico.</p>
                     </div>
                 </article>
@@ -879,7 +962,7 @@
             <div class="text-center mb-16 scroll-reveal">
                 <p class="text-emerald-300 font-semibold uppercase tracking-[0.2em] text-sm mb-3">Comparativas clave</p>
                 <h2 class="text-4xl sm:text-5xl font-bold mb-4">
-                    <span class="gradient-text">VM, paravirtualización y contenedores</span>
+                    <span class="gradient-text letter-animate letter-jack" data-letter-animation>VM, paravirtualización y contenedores</span>
                 </h2>
                 <p class="text-slate-400 text-lg max-w-3xl mx-auto">
                     Estas tablas ayudan al grupo a explicar cuándo conviene cada modalidad dentro de un entorno de procesamiento de datos e inteligencia artificial.
@@ -888,7 +971,7 @@
 
             <div class="grid lg:grid-cols-2 gap-8">
                 <div class="glass-card rounded-2xl p-8 scroll-reveal">
-                    <h3 class="text-2xl font-bold text-white mb-6">Virtualización completa vs Paravirtualización</h3>
+                    <h3 class="text-2xl font-bold text-white mb-6 letter-animate letter-lightspeed" data-letter-animation>Virtualización completa vs Paravirtualización</h3>
                     <div class="overflow-hidden rounded-xl border border-white/10">
                         <div class="grid grid-cols-2 bg-slate-800/80 text-sm font-bold text-white">
                             <div class="p-4 border-r border-white/10">Virtualización completa</div>
@@ -910,7 +993,7 @@
                 </div>
 
                 <div class="glass-card rounded-2xl p-8 scroll-reveal">
-                    <h3 class="text-2xl font-bold text-white mb-6">Máquina virtual vs Contenedor</h3>
+                    <h3 class="text-2xl font-bold text-white mb-6 letter-animate letter-roll" data-letter-animation>Máquina virtual vs Contenedor</h3>
                     <div class="overflow-hidden rounded-xl border border-white/10">
                         <div class="grid grid-cols-2 bg-slate-800/80 text-sm font-bold text-white">
                             <div class="p-4 border-r border-white/10">VM</div>
@@ -961,7 +1044,7 @@
             <div class="text-center mb-12">
                 <p class="text-emerald-300 font-semibold uppercase tracking-[0.2em] text-sm mb-3">Cierre del caso práctico</p>
                 <h2 class="text-4xl sm:text-5xl font-bold mb-6">
-                    Conclusiones y <span class="gradient-text">preguntas finales</span>
+                    <span class="letter-animate letter-bounce" data-letter-animation>Conclusiones y</span> <span class="gradient-text letter-animate letter-slide" data-letter-animation>preguntas finales</span>
                 </h2>
                 <p class="text-xl text-slate-400 max-w-3xl mx-auto">
                     El cierre resume por qué virtualizar, qué aporta cada modalidad y cómo llevar esta arquitectura a un proyecto real.
@@ -1071,6 +1154,38 @@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script>
+        // ============================================
+        // ANIMATED LETTERS
+        // ============================================
+        function initAnimatedLetters() {
+            document.querySelectorAll('[data-letter-animation]').forEach((element) => {
+                const text = element.textContent.trim();
+                if (!text || element.dataset.lettersReady === 'true') return;
+
+                element.setAttribute('aria-label', text);
+                element.dataset.lettersReady = 'true';
+                element.textContent = '';
+
+                [...text].forEach((char, index) => {
+                    const span = document.createElement('span');
+                    span.setAttribute('aria-hidden', 'true');
+                    span.style.setProperty('--i', index);
+
+                    if (char === ' ') {
+                        span.className = 'letter-space';
+                        span.textContent = '\u00a0';
+                    } else {
+                        span.className = 'letter';
+                        span.textContent = char;
+                    }
+
+                    element.appendChild(span);
+                });
+            });
+        }
+
+        initAnimatedLetters();
+
         // ============================================
         // LOADER
         // ============================================
