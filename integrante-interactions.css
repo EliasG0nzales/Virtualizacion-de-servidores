@@ -1,3 +1,116 @@
+body {
+  --integrante-bg: url("assets/integrante-bg-1.png");
+  --cursor-x: 74%;
+  --cursor-y: 22%;
+  --trail-x: 68%;
+  --trail-y: 30%;
+  position: relative;
+  min-height: 100vh;
+  isolation: isolate;
+  overflow-x: hidden;
+}
+
+body.integrante-bg-1 { --integrante-bg: url("assets/integrante-bg-1.png"); }
+body.integrante-bg-2 { --integrante-bg: url("assets/integrante-bg-2.png"); }
+body.integrante-bg-3 { --integrante-bg: url("assets/integrante-bg-3.png"); }
+body.integrante-bg-4 { --integrante-bg: url("assets/integrante-bg-4.png"); }
+body.integrante-bg-5 { --integrante-bg: url("assets/integrante-bg-5.png"); }
+body.integrante-bg-6 { --integrante-bg: url("assets/integrante-bg-6.png"); }
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: -8%;
+  pointer-events: none;
+}
+
+body::before {
+  z-index: 0;
+  background:
+    linear-gradient(90deg, rgba(2, 6, 23, 0.56), rgba(2, 6, 23, 0.18) 52%, rgba(2, 6, 23, 0.38)),
+    linear-gradient(180deg, rgba(2, 6, 23, 0.04), rgba(2, 6, 23, 0.46)),
+    var(--integrante-bg),
+    radial-gradient(ellipse at 22% 25%, rgba(86, 96, 116, 0.18), transparent 34%),
+    radial-gradient(ellipse at 72% 60%, rgba(43, 48, 58, 0.24), transparent 42%),
+    radial-gradient(ellipse at 48% 84%, rgba(120, 126, 138, 0.1), transparent 38%),
+    linear-gradient(135deg, #040814 0%, #0a0d16 33%, #161419 62%, #05070d 100%);
+  background-blend-mode: normal, multiply, normal, screen, normal, screen, normal;
+  background-size:
+    100% 100%,
+    100% 100%,
+    cover,
+    100% 100%,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  background-repeat:
+    no-repeat,
+    no-repeat,
+    no-repeat,
+    no-repeat,
+    no-repeat,
+    no-repeat,
+    no-repeat;
+  background-position:
+    center,
+    center,
+    center center,
+    center,
+    center,
+    center,
+    center;
+  filter: saturate(1.2) contrast(1.06) brightness(1.28);
+  transform: translate3d(0, 0, 0);
+  animation: stormClouds 11s ease-in-out infinite;
+}
+
+body::after {
+  z-index: 1;
+  opacity: 0.16;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 144px),
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.028) 0 1px, transparent 1px 122px);
+  mix-blend-mode: screen;
+}
+
+nav,
+header,
+main {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes stormClouds {
+  0%, 100% { transform: translate3d(-1%, 0, 0) scale(1) rotate(0deg); opacity: 0.96; }
+  45% { transform: translate3d(1.5%, -1%, 0) scale(1.05) rotate(0.45deg); opacity: 1; }
+  70% { transform: translate3d(-0.5%, 1%, 0) scale(1.03) rotate(-0.25deg); opacity: 0.98; }
+}
+
+.mouse-flame {
+  position: fixed;
+  width: 120px;
+  height: 120px;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle, rgba(255, 150, 54, 0.28) 0 12%, rgba(177, 49, 11, 0.18) 34%, transparent 70%);
+  filter: blur(20px) saturate(1.15);
+  mix-blend-mode: screen;
+  transform: translate(-50%, -50%) scale(0.5);
+  opacity: 0;
+  animation: flameTrail 0.9s ease-out forwards;
+}
+
+@keyframes flameTrail {
+  0% { opacity: 0.32; transform: translate(-50%, -50%) scale(0.28) rotate(0deg); }
+  45% { opacity: 0.2; transform: translate(-50%, -50%) scale(0.78) rotate(16deg); }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(1.45) rotate(34deg); }
+}
+
 .letter-animate {
   white-space: normal;
 }
@@ -162,6 +275,11 @@ body.lightbox-lock {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  body::before,
+  .mouse-flame {
+    animation: none;
+  }
+
   .letter-animate .letter,
   .previewable-image,
   .image-lightbox {

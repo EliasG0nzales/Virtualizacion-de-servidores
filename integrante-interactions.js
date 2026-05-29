@@ -60,6 +60,12 @@
     });
   }
 
+  function setIntegranteBackground() {
+    const match = window.location.pathname.match(/integrante(\d+)\.html$/i);
+    const integranteNumber = match ? Math.min(Math.max(Number(match[1]), 1), 6) : 1;
+    document.body.classList.add(`integrante-bg-${integranteNumber}`);
+  }
+
   function createLightbox() {
     const lightbox = document.createElement('div');
     lightbox.className = 'image-lightbox';
@@ -131,7 +137,70 @@
     });
   }
 
+  function initInteractiveBackground() {
+    const root = document.body;
+    let targetX = 74;
+    let targetY = 22;
+    let trailX = 68;
+    let trailY = 30;
+    let currentX = targetX;
+    let currentY = targetY;
+    let lastFlameAt = 0;
+    let rafId = null;
+
+    function render() {
+      trailX += (currentX - trailX) * 0.055;
+      trailY += (currentY - trailY) * 0.055;
+      currentX += (targetX - currentX) * 0.12;
+      currentY += (targetY - currentY) * 0.12;
+      root.style.setProperty('--cursor-x', `${currentX.toFixed(2)}%`);
+      root.style.setProperty('--cursor-y', `${currentY.toFixed(2)}%`);
+      root.style.setProperty('--trail-x', `${trailX.toFixed(2)}%`);
+      root.style.setProperty('--trail-y', `${trailY.toFixed(2)}%`);
+
+      if (Math.abs(targetX - currentX) > 0.02 || Math.abs(targetY - currentY) > 0.02) {
+        rafId = requestAnimationFrame(render);
+      } else {
+        rafId = null;
+      }
+    }
+
+    function createFlame(x, y) {
+      const flame = document.createElement('span');
+      const size = 70 + Math.random() * 60;
+
+      flame.className = 'mouse-flame';
+      flame.style.width = `${size}px`;
+      flame.style.height = `${size}px`;
+      flame.style.left = `${x}px`;
+      flame.style.top = `${y}px`;
+      flame.style.animationDuration = `${0.45 + Math.random() * 0.35}s`;
+      flame.style.transform = `translate(-50%, -50%) scale(${0.25 + Math.random() * 0.16})`;
+      document.body.appendChild(flame);
+      flame.addEventListener('animationend', () => flame.remove(), { once: true });
+    }
+
+    function moveGlow(event) {
+      targetX = (event.clientX / window.innerWidth) * 100;
+      targetY = (event.clientY / window.innerHeight) * 100;
+
+      if (!rafId) {
+        rafId = requestAnimationFrame(render);
+      }
+
+      const now = performance.now();
+      if (now - lastFlameAt > 110) {
+        lastFlameAt = now;
+        createFlame(event.clientX, event.clientY);
+      }
+    }
+
+    window.addEventListener('pointermove', moveGlow, { passive: true });
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
+    setIntegranteBackground();
+    initInteractiveBackground();
     initAnimatedLetters();
     initImagePreview();
   });
